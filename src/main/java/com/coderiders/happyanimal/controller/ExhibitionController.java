@@ -3,6 +3,8 @@ package com.coderiders.happyanimal.controller;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
 import com.coderiders.happyanimal.service.ExhibitionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Validated
 @RestController
 @RequestMapping("/exhibitions")
+@Tag(name = "exhibition-controller", description = "Выставки животных")
 public class ExhibitionController {
     private final ExhibitionService exhibitionService;
 
@@ -22,6 +25,7 @@ public class ExhibitionController {
         this.exhibitionService = exhibitionService;
     }
 
+    @Operation(summary = "Создание выставки")
     @PostMapping
     public ResponseEntity<ExhibitionRsDto> addExhibition(ExhibitionRqDto exhibitionRqDto) {
         var created = exhibitionService.saveExhibition(exhibitionRqDto);
@@ -32,11 +36,13 @@ public class ExhibitionController {
         return ResponseEntity.created(url).body(created);
     }
 
+    @Operation(summary = "Все существующие выставки")
     @GetMapping
     public Page<ExhibitionRsDto> getAllExhibitions(Pageable pageable) {
         return exhibitionService.getAll(pageable);
     }
 
+    @Operation(summary = "Выставка на конкретную дату")
     @GetMapping(path = "/{date}")
     public ResponseEntity<ExhibitionRsDto> getExhibitionByDate(@PathVariable String date) {
         var created = exhibitionService.findByDate(date);
