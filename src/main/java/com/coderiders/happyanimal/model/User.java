@@ -4,6 +4,8 @@ import com.coderiders.happyanimal.enums.UserRole;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -45,4 +47,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Animal> animals;
+
+
+
 }

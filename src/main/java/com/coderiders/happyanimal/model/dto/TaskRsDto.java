@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.model.dto;
 
+import com.coderiders.happyanimal.enums.TaskType;
 import lombok.*;
 
 import javax.validation.constraints.Min;

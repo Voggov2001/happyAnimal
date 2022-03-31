@@ -3,6 +3,8 @@ package com.coderiders.happyanimal.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -25,4 +27,10 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    /*@Column(name = "time")
+    private LocalTime localTime;
+
+    @Column(name = "date")
+    private LocalDate localDate;*/
 }

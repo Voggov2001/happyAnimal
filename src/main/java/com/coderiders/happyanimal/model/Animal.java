@@ -3,6 +3,7 @@ package com.coderiders.happyanimal.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -54,4 +55,7 @@ public class Animal {
 
     @Column(name = "external_features")
     private String externalFeatures;
+
+    @Column(name = "local_date")
+    private LocalDate localDate;
 }

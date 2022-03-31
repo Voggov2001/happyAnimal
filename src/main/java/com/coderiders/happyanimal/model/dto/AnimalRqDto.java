@@ -2,6 +2,8 @@ package com.coderiders.happyanimal.model.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -25,4 +27,5 @@ public class AnimalRqDto {
     private Long userId;
     private String featuresOfKeeping;
     private String externalFeatures;
+    private LocalDate localDate;
 }
