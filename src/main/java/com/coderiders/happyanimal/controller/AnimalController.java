@@ -4,7 +4,9 @@ import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.AnimalService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/animals")
+@Tag(name = "animal-controller", description = "Контроллер животных")
 public class AnimalController {
     private final AnimalService animalService;
 
@@ -27,6 +30,7 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
+    @Operation(summary = "Добавление животного")
     @PostMapping
     public ResponseEntity<AnimalRsDto> addAnimal(@Valid @RequestBody AnimalRqDto animalRqDto) {
         var created = animalService.saveAnimal(animalRqDto);
@@ -37,30 +41,35 @@ public class AnimalController {
         return ResponseEntity.created(url).body(created);
     }
 
+    @Operation(summary = "Выдача всех животных")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<AnimalRsDto> getAllAnimals(Pageable pageable) {
         return animalService.getAll(pageable);
     }
 
+    @Operation(summary = "Животные конкретного пользователя")
     @GetMapping(path = "/{userId}")
     public Page<AnimalRsDto> getUserAnimals(@PathVariable @Parameter(name = "User Id", example = "1") Long userId,
                                             Pageable pageable) {
         return animalService.getAllByUserId(userId, pageable);
     }
 
+    @Operation(summary = "Задачи, прикрепленные к животным")
     @GetMapping(path = "/{animalId}/tasks")
     public Page<TaskRsDto> getAnimalTasks(@PathVariable Long animalId,
                                           Pageable pageable) {
         return animalService.getAnimalAllTasks(animalId, pageable);
     }
 
+    @Operation(summary = "Связать животное и пользователя")
     @PutMapping(path = "/{animalId}")
     public AnimalRsDto setUser(@PathVariable Long animalId, @RequestParam Long userId) {
         return animalService.setUser(animalId, userId);
     }
 
+    @Operation(summary = "Одно животное по id")
     @GetMapping(path = "/{animalId}")
-    public AnimalRsDto setUser(@PathVariable Long animalId) {
+    public AnimalRsDto getById(@PathVariable Long animalId) {
         return animalService.getById(animalId);
     }
 }
