@@ -28,6 +28,7 @@ public class UserService {
     @Transactional
     public UserRsDto saveUser(UserRqDto userRqDto) {
         var user = userMapper.mapToUser(userRqDto);
+        user.setUserRole(UserRole.EMPLOYEE);
         userRepository.save(user);
         return userMapper.mapToResponseDto(user);
     }

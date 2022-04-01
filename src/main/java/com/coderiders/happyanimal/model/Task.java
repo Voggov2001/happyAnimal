@@ -1,12 +1,15 @@
 package com.coderiders.happyanimal.model;
 
-import com.coderiders.happyanimal.enums.TaskType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,32 +23,21 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "type")
-    private String type;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "type")
+    private TaskType taskType;
 
-    @Column(name = "date_time")
-    private String dateTime;
+    @Column(name = "date")
+    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    private LocalDateTime localDateTime;
 
-    @Column(name = "state")
-    private String state;
+    @Column(name = "staus")
+    private boolean completed;
 
     @Column(name = "repeat_type")
     private String repeatType;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "animal_like",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "animal_id"))
-    private List<Animal> animals;
-
-    @Column(name = "time")
-    private LocalTime localTime;
-
-    @Column(name = "date")
-    private LocalDate localDate;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "animal_id")
     private Animal animal;
 }

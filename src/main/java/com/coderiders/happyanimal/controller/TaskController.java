@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
+@Slf4j
 public class TaskController {
     private final TaskService taskService;
 
@@ -37,9 +39,15 @@ public class TaskController {
     }
 
     @Operation(summary = "Задачи конкретного пользователя")
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<TaskRsDto> getUserTasks(@PathVariable Long userId, Pageable pageable) {
         return taskService.getByUserId(userId, pageable);
+    }
+
+    @Operation(summary = "Задачи конкретного животного")
+    @GetMapping(path = "/animal/{animalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<TaskRsDto> getAnimalTasks(@PathVariable Long animalId, Pageable pageable) {
+        return taskService.getByAnimalId(animalId, pageable);
     }
 
     @Operation(summary = "Все задачи")
