@@ -1,13 +1,17 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/happyAnimal
     username: postgres
-    password: pass
+    password: root
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+        write-dates-as-timestamps: true
 server:
   servlet:
     context-path: /api

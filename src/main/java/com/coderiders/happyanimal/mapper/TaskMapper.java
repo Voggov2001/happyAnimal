@@ -1,36 +1,45 @@
 package com.coderiders.happyanimal.mapper;
 
+import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.Task;
+import com.coderiders.happyanimal.model.TaskType;
 import com.coderiders.happyanimal.model.dto.TaskRqDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
+import com.coderiders.happyanimal.repository.AnimalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class TaskMapper {
+    private final AnimalRepository animalRepository;
 
-    public TaskRqDto mapToRqDto(Task task) {
-        var modelMapper = new ModelMapper();
-        TypeMap<Task, TaskRqDto> typeMap = modelMapper.createTypeMap(Task.class, TaskRqDto.class);
-        typeMap.addMappings(
-                mapper -> mapper.map(Task::getAnimal, TaskRqDto::setAnimalRsDto));
-        return modelMapper.map(task, TaskRqDto.class);
+    @Autowired
+    public TaskMapper(AnimalRepository animalRepository) {
+        this.animalRepository = animalRepository;
     }
 
     @Transactional
     public Task mapToTask(TaskRqDto dto) {
-        var modelMapper = new ModelMapper();
-        TypeMap<TaskRqDto, Task> typeMap = modelMapper.createTypeMap(TaskRqDto.class, Task.class);
-        typeMap.addMappings(
-                mapper -> mapper.map(TaskRqDto::getAnimalRsDto, Task::setAnimal));
-        return modelMapper.map(dto, Task.class);
+        return Task.builder()
+                .taskType(new TaskType(dto.getType()))
+                .localDate(dto.getDate())
+                .localTime(dto.getTime())
+                .completed(false)
+                .repeatType(dto.getRepeatType())
+                .animal(animalRepository.findById(dto.getAnimalId()).orElseThrow(()->new NotFoundException("Животное не найдено")))
+                .build();
     }
 
     @Transactional
     public TaskRsDto mapToRsDto(Task task) {
-        var modelMapper = new ModelMapper();
-        return modelMapper.map(task, TaskRsDto.class);
+        return TaskRsDto.builder()
+                .id(task.getId())
+                .type(task.getTaskType().getType())
+                .date(task.getLocalDate())
+                .time(task.getLocalTime())
+                .completed(task.isCompleted())
+                .repeatType(task.getRepeatType())
+                .build();
     }
 }

@@ -1,10 +1,11 @@
 package com.coderiders.happyanimal.model.dto;
 
-import com.coderiders.happyanimal.enums.TaskType;
 import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -18,9 +19,11 @@ public class TaskRsDto {
     @NotNull
     private String type;
     @NotNull
-    private String dateTime;
+    private LocalDate date;
     @NotNull
-    private String state;
+    private LocalTime time;
+    @NotNull
+    private boolean completed;
     @NotNull
     private String repeatType;
 }

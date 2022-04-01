@@ -33,8 +33,8 @@ public class SchedulerService {
         List<Task> result = taskRepository.findAll();
         for (var i : result) {
             if (i.getRepeatType().equals(TaskType.EVERY_DAY.getString())) {
-                i.setState("in progress...");
-                message.setContent("Статус задания " + i.getType() + " обновлен");
+                i.setCompleted(false);
+                message.setContent("Статус задания " + i.getTaskType() + " обновлен");
                 this.simpMessagingTemplate.convertAndSend("/topic/public", message);
             }
         }
@@ -45,8 +45,8 @@ public class SchedulerService {
         List<Task> result = taskRepository.findAll();
         for (var i : result) {
             if (i.getRepeatType().equals(TaskType.EVERY_WEEK.getString())) {
-                i.setState("in progress...");
-                message.setContent("Статус задания " + i.getType() + " обновлен");
+                i.setCompleted(false);
+                message.setContent("Статус задания " + i.getTaskType()+ " обновлен");
                 this.simpMessagingTemplate.convertAndSend("/topic/public", message);
             }
         }
@@ -57,8 +57,8 @@ public class SchedulerService {
         List<Task> result = taskRepository.findAll();
         for (var i : result) {
             if (i.getRepeatType().equals(TaskType.EVERY_MONTH.getString())) {
-                i.setState("in progress...");
-                message.setContent("Статус задания " + i.getType() + " обновлен");
+                i.setCompleted(false);
+                message.setContent("Статус задания " + i.getTaskType() + " обновлен");
                 this.simpMessagingTemplate.convertAndSend("/topic/public", message);
             }
         }

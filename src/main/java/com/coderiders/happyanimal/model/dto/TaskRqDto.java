@@ -18,11 +18,9 @@ public class TaskRqDto {
     private String type;
     @NotNull
     private LocalDate date;
-    @NotNull
     private LocalTime time;
-    private String state;
     @NotNull
     private String repeatType;
     @NotNull
-    private @Valid AnimalRsDto animalRsDto;
+    private Long animalId;
 }

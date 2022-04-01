@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
+@Slf4j
 public class TaskController {
     private final TaskService taskService;
 
@@ -25,7 +27,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "Добавление задачи")
+    @Operation(summary = "Добавление задачи", description = "!!!\nВремя (time) вводить строкой типа \"02:00:00\"")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskRsDto> addTask(@Validated @RequestBody TaskRqDto taskDto) {
         var created = taskService.saveTask(taskDto);
