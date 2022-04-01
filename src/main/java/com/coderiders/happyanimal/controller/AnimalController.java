@@ -48,7 +48,7 @@ public class AnimalController {
     }
 
     @Operation(summary = "Животные конкретного пользователя")
-    @GetMapping(path = "/{userId}")
+    @GetMapping(path = "/user/{userId}")
     public Page<AnimalRsDto> getUserAnimals(@PathVariable @Parameter(name = "User Id", example = "1") Long userId,
                                             Pageable pageable) {
         return animalService.getAllByUserId(userId, pageable);

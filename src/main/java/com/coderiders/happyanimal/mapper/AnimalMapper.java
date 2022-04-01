@@ -51,6 +51,7 @@ public class AnimalMapper {
                 .animalKindDto(animalKindMapper.mapToDto(animal.getAnimalKind()))
                 .location(animal.getLocation())
                 .status(animal.getStatus())
+                .userRsDto(userMapper.mapToResponseDto(animal.getUser()))
                 .featuresOfKeeping(animal.getFeaturesOfKeeping())
                 .externalFeatures(animal.getExternalFeatures())
                 .build();

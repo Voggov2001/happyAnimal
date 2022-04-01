@@ -91,6 +91,7 @@ public class AnimalService {
         animal.setUser(userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_USER)
         ));
+        animalRepository.save(animal);
         return animalMapper.mapToDto(animalRepository.save(animal));
     }
 }

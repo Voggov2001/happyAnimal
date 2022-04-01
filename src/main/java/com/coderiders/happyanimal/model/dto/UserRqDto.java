@@ -23,6 +23,4 @@ public class UserRqDto {
     private String login;
     @NotNull
     private String password;
-    @NotNull
-    private UserRole role;
 }
