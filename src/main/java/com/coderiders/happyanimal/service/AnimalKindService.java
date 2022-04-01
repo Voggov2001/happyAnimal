@@ -22,9 +22,9 @@ public class AnimalKindService {
 
     @Autowired
     public AnimalKindService(AnimalKindRepository animalKindRepository, AnimalKindMapper animalKindMapper) throws IOException {
-        createAll();
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
+        createAll();
     }
 
 
