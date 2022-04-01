@@ -28,7 +28,7 @@ public class Animal {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Task> tasks;
 
     @Column(name = "age")

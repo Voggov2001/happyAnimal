@@ -74,4 +74,14 @@ public class TaskService {
         });
         return new PageImpl<>(tasks, pageable, pageable.getOffset());
     }
+
+    public Page<TaskRsDto> getByAnimalId(Long animalId, Pageable pageable) {
+        Animal animal = animalRepository.findById(animalId).orElseThrow(
+                () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL));
+        List<TaskRsDto> tasks = animal.getTasks()
+                .stream()
+                .map(taskMapper::mapToRsDto)
+                .collect(Collectors.toList());
+        return new PageImpl<>(tasks, pageable, pageable.getOffset());
+    }
 }

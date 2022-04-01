@@ -39,9 +39,15 @@ public class TaskController {
     }
 
     @Operation(summary = "Задачи конкретного пользователя")
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<TaskRsDto> getUserTasks(@PathVariable Long userId, Pageable pageable) {
         return taskService.getByUserId(userId, pageable);
+    }
+
+    @Operation(summary = "Задачи конкретного животного")
+    @GetMapping(path = "/animal/{animalId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<TaskRsDto> getAnimalTasks(@PathVariable Long animalId, Pageable pageable) {
+        return taskService.getByAnimalId(animalId, pageable);
     }
 
     @Operation(summary = "Все задачи")
