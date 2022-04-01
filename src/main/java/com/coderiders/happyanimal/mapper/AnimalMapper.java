@@ -37,12 +37,13 @@ public class AnimalMapper {
                 .animalKind(animalKindRepository.getById(dto.getKind()))
                 .featuresOfKeeping(dto.getFeaturesOfKeeping())
                 .externalFeatures(dto.getExternalFeatures())
+                .user(null)
                 .build();
 
     }
 
     public AnimalRsDto mapToDto(Animal animal) {
-        return AnimalRsDto.builder()
+        AnimalRsDto animalRsDto =  AnimalRsDto.builder()
                 .id(animal.getId())
                 .name(animal.getName())
                 .gender(animal.getGender())
@@ -51,9 +52,12 @@ public class AnimalMapper {
                 .animalKindDto(animalKindMapper.mapToDto(animal.getAnimalKind()))
                 .location(animal.getLocation())
                 .status(animal.getStatus())
-                .userRsDto(userMapper.mapToResponseDto(animal.getUser()))
                 .featuresOfKeeping(animal.getFeaturesOfKeeping())
                 .externalFeatures(animal.getExternalFeatures())
                 .build();
+        if (animal.getUser()!= null){
+            animalRsDto.setUserRsDto(userMapper.mapToResponseDto(animal.getUser()));
+        }
+        return animalRsDto;
     }
 }

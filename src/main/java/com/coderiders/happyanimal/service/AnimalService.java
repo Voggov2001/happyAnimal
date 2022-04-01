@@ -44,7 +44,6 @@ public class AnimalService {
     @Transactional
     public AnimalRsDto saveAnimal(AnimalRqDto animalRqDto) {
         Animal animal = animalMapper.mapToAnimal(animalRqDto);
-
         return animalMapper.mapToDto(animalRepository.save(animal));
     }
 

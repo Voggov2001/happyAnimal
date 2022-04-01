@@ -23,8 +23,7 @@ public class TaskMapper {
     public Task mapToTask(TaskRqDto dto) {
         return Task.builder()
                 .taskType(new TaskType(dto.getType()))
-                .localDate(dto.getDate())
-                .localTime(dto.getTime())
+                .localDateTime(dto.getLocalDateTime())
                 .completed(false)
                 .repeatType(dto.getRepeatType())
                 .animal(animalRepository.findById(dto.getAnimalId()).orElseThrow(()->new NotFoundException("Животное не найдено")))
@@ -36,8 +35,7 @@ public class TaskMapper {
         return TaskRsDto.builder()
                 .id(task.getId())
                 .type(task.getTaskType().getType())
-                .date(task.getLocalDate())
-                .time(task.getLocalTime())
+                .dateTime(task.getLocalDateTime().toString())
                 .completed(task.isCompleted())
                 .repeatType(task.getRepeatType())
                 .build();

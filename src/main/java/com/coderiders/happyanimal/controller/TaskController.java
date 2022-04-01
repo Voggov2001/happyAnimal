@@ -27,7 +27,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "Добавление задачи", description = "!!!\nВремя (time) вводить строкой типа \"02:00:00\"")
+    @Operation(summary = "Добавление задачи")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskRsDto> addTask(@Validated @RequestBody TaskRqDto taskDto) {
         var created = taskService.saveTask(taskDto);

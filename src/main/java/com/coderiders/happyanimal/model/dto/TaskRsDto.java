@@ -5,6 +5,7 @@ import lombok.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -19,9 +20,7 @@ public class TaskRsDto {
     @NotNull
     private String type;
     @NotNull
-    private LocalDate date;
-    @NotNull
-    private LocalTime time;
+    String dateTime;
     @NotNull
     private boolean completed;
     @NotNull
