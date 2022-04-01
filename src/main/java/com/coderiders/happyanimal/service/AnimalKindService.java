@@ -21,7 +21,8 @@ public class AnimalKindService {
     AnimalKindMapper animalKindMapper;
 
     @Autowired
-    public AnimalKindService(AnimalKindRepository animalKindRepository, AnimalKindMapper animalKindMapper) {
+    public AnimalKindService(AnimalKindRepository animalKindRepository, AnimalKindMapper animalKindMapper) throws IOException {
+        createAll();
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
     }
