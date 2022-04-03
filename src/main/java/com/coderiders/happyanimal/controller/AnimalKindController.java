@@ -15,41 +15,40 @@ import java.util.List;
 
 @Tag(name = "animal-kind-controller", description = "Контроллер вида животного\n Класс, отряд и вид в отдельной таблице")
 public class AnimalKindController {
-
-    AnimalKindService service;
+    private final AnimalKindService animalKindService;
 
     @Autowired
     public AnimalKindController(AnimalKindService service) {
-        this.service = service;
+        this.animalKindService = service;
     }
 
     @Operation(summary = "Загружает заготовки видов в бд")
     @PostMapping
     public void createAll() throws IOException {
-        service.createAll();
+        animalKindService.createAll();
     }
 
     @Operation(summary = "Все виды (Объекты) из базы")
     @GetMapping(path = "/all")
     public List<AnimalKindDto> getAllKinds() {
-        return service.getAll();
+        return animalKindService.getAll();
     }
 
     @Operation(summary = "Все строки с названиями видов")
     @GetMapping
     public List<String> getAllKindnames() {
-        return service.getAllOnlyKinds();
+        return animalKindService.getAllOnlyKinds();
     }
 
     @Operation(summary = "Возвращает объект по названию вида")
     @GetMapping(path = "/{kindname}")
     public AnimalKindDto getOneByKindName(@PathVariable String kindname) {
-        return service.getByKindName(kindname);
+        return animalKindService.getByKindName(kindname);
     }
 
     @Operation(summary = "Сбрасывает таблицу видов")
     @DeleteMapping
     public void deleteAll() {
-        service.deleteAll();
+        animalKindService.deleteAll();
     }
 }
