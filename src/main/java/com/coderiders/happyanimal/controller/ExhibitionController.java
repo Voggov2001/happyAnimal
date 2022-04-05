@@ -27,7 +27,7 @@ public class ExhibitionController {
 
     @Operation(summary = "Создание выставки")
     @PostMapping
-    public ResponseEntity<ExhibitionRsDto> addExhibition(ExhibitionRqDto exhibitionRqDto) {
+    public ResponseEntity<ExhibitionRsDto> addExhibition(@Validated @RequestParam ExhibitionRqDto exhibitionRqDto) {
         var created = exhibitionService.saveExhibition(exhibitionRqDto);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
