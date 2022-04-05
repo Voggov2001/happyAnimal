@@ -93,4 +93,10 @@ public class AnimalService {
         animalRepository.save(animal);
         return animalMapper.mapToDto(animalRepository.save(animal));
     }
+
+    public AnimalRsDto editAnimal(Long animalId, AnimalRqDto animalRqDto) {
+        Animal animal = animalMapper.mapToAnimal(animalRqDto);
+        animal.setId(animalId);
+        return animalMapper.mapToDto(animalRepository.save(animal));
+    }
 }

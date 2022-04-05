@@ -25,11 +25,23 @@ public class AnimalStatusService {
     public AnimalStatusService(AnimalStatusRepository animalStatusRepository, AnimalStatusMapper animalStatusMapper) {
         this.animalStatusRepository = animalStatusRepository;
         this.animalStatusMapper = animalStatusMapper;
+        createAll();
     }
 
     @Transactional
-    public AnimalStatusRsDto saveAnimal(AnimalStatusRqDto animalStatusRqDto) {
-        AnimalStatus animalStatus = animalStatusMapper.mapToAnimal(animalStatusRqDto);
+    public void createAll(){
+        saveAnimalStatus(new AnimalStatusRqDto("Здоров", true));
+        saveAnimalStatus(new AnimalStatusRqDto("Болен", false));
+        saveAnimalStatus(new AnimalStatusRqDto("Мертв", false));
+        saveAnimalStatus(new AnimalStatusRqDto("На осмотре", false));
+        saveAnimalStatus(new AnimalStatusRqDto("Записан на осмотр",  false));
+        saveAnimalStatus(new AnimalStatusRqDto("В спячке", false));
+        saveAnimalStatus(new AnimalStatusRqDto("Продан", false));
+        saveAnimalStatus(new AnimalStatusRqDto("Новорожденный", false));
+    }
+    @Transactional
+    public AnimalStatusRsDto saveAnimalStatus(AnimalStatusRqDto animalStatusRqDto) {
+        AnimalStatus animalStatus = animalStatusMapper.mapToAnimalStatus(animalStatusRqDto);
         return animalStatusMapper.mapToDto(animalStatusRepository.save(animalStatus));
     }
 
@@ -39,7 +51,7 @@ public class AnimalStatusService {
     }
 
     @Transactional
-    public AnimalStatusRsDto getById(Long id) {
+    public AnimalStatusRsDto getById(String id) {
         AnimalStatus animalStatus = animalStatusRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND));
         return animalStatusMapper.mapToDto(animalStatus);
