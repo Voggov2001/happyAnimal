@@ -29,8 +29,7 @@ public class AnimalRsDto {
     private AnimalKindDto animalKindDto;
     @NotNull
     private String location;
-    @NotNull
-    private String status;
+    private AnimalStatusRsDto animalStatusRsDto;
     private String featuresOfKeeping;
     private String externalFeatures;
     private UserRsDto userRsDto;

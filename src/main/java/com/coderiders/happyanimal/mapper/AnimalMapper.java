@@ -4,27 +4,33 @@ import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.repository.AnimalKindRepository;
+import com.coderiders.happyanimal.repository.AnimalStatusRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AnimalMapper {
-    UserRepository userRepository;
-    AnimalKindRepository animalKindRepository;
-    AnimalKindMapper animalKindMapper;
-    UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final AnimalKindRepository animalKindRepository;
+    private final AnimalKindMapper animalKindMapper;
+    private final UserMapper userMapper;
+    private final AnimalStatusMapper animalStatusMapper;
+    private final AnimalStatusRepository animalStatusRepository;
 
     @Autowired
     public AnimalMapper(UserRepository userRepository,
                         AnimalKindRepository animalKindRepository,
                         AnimalKindMapper animalKindMapper,
-                        UserMapper userMapper) {
+                        UserMapper userMapper,
+                        AnimalStatusMapper animalStatusMapper,
+                        AnimalStatusRepository animalStatusRepository) {
         this.userRepository = userRepository;
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
         this.userMapper = userMapper;
+        this.animalStatusMapper = animalStatusMapper;
+        this.animalStatusRepository = animalStatusRepository;
     }
 
     public Animal mapToAnimal(AnimalRqDto dto) {
@@ -34,16 +40,16 @@ public class AnimalMapper {
                 .age(dto.getAge())
                 .height(dto.getHeight())
                 .weight(dto.getWeight())
-                .animalKind(animalKindRepository.getById(dto.getKind()))
+                .animalKind(animalKindRepository.findById(dto.getKind()).orElse(null))
                 .featuresOfKeeping(dto.getFeaturesOfKeeping())
                 .externalFeatures(dto.getExternalFeatures())
-                .user(null)
+                .user(userRepository.findById(dto.getUserId()).orElse(null))
+                .status(animalStatusRepository.findById(dto.getStatus()).orElse(null))
                 .build();
-
     }
 
     public AnimalRsDto mapToDto(Animal animal) {
-        AnimalRsDto animalRsDto =  AnimalRsDto.builder()
+        AnimalRsDto animalRsDto = AnimalRsDto.builder()
                 .id(animal.getId())
                 .name(animal.getName())
                 .gender(animal.getGender())
@@ -51,12 +57,14 @@ public class AnimalMapper {
                 .weight(animal.getWeight())
                 .animalKindDto(animalKindMapper.mapToDto(animal.getAnimalKind()))
                 .location(animal.getLocation())
-                .status(animal.getStatus())
                 .featuresOfKeeping(animal.getFeaturesOfKeeping())
                 .externalFeatures(animal.getExternalFeatures())
                 .build();
-        if (animal.getUser()!= null){
+        if (animal.getUser() != null) {
             animalRsDto.setUserRsDto(userMapper.mapToResponseDto(animal.getUser()));
+        }
+        if (animal.getStatus() != null) {
+            animalRsDto.setAnimalStatusRsDto(animalStatusMapper.mapToDto(animal.getStatus()));
         }
         return animalRsDto;
     }

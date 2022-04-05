@@ -6,7 +6,6 @@ import com.coderiders.happyanimal.service.AnimalStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,31 +27,31 @@ public class AnimalStatusController {
 
     @PostMapping
     public ResponseEntity<AnimalStatusRsDto> addAnimalStatus(@Valid @RequestBody AnimalStatusRqDto animalStatusDto) {
-        var created = animalStatusService.saveAnimal(animalStatusDto);
+        var created = animalStatusService.saveAnimalStatus(animalStatusDto);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(created.getId())
+                .buildAndExpand(created.getName())
                 .toUri();
         return ResponseEntity.created(url).body(created);
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<AnimalStatusRsDto> getAllAnimals(Pageable pageable) {
-        return animalStatusService.getAll(pageable);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity getAnimalStatusById(@PathVariable Long id) {
+    public ResponseEntity<AnimalStatusRsDto> getAnimalStatusById(@PathVariable String id) {
         var created = animalStatusService.getById(id);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(created.getId())
+                .buildAndExpand(created.getName())
                 .toUri();
         return ResponseEntity.created(url).body(created);
     }
 
-    @GetMapping
-    public List<AnimalStatusRsDto> getByPermissionToParticipate(@RequestParam boolean permissionToParticipate) {
+    @GetMapping("/{permissionToParticipate}")
+    public List<AnimalStatusRsDto> getByPermissionToParticipate(@PathVariable boolean permissionToParticipate) {
         return animalStatusService.getByPermissionToParticipate(permissionToParticipate);
+    }
+
+    @GetMapping
+    public Page<AnimalStatusRsDto> getAllStatuses(Pageable pageable) {
+        return animalStatusService.getAll(pageable);
     }
 }

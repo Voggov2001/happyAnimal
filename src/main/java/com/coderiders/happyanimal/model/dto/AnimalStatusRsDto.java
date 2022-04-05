@@ -12,9 +12,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class AnimalStatusRsDto {
     @NotNull
-    @Min(1)
-    private Long id;
-    @NotNull
     private String name;
     @NotNull
     private boolean permissionToParticipate;

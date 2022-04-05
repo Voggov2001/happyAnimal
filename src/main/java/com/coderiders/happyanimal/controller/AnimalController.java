@@ -61,10 +61,10 @@ public class AnimalController {
         return animalService.getAnimalAllTasks(animalId, pageable);
     }
 
-    @Operation(summary = "Связать животное и пользователя")
+    @Operation(summary = "Изменить животное")
     @PutMapping(path = "/{animalId}")
-    public AnimalRsDto setUser(@PathVariable Long animalId, @RequestParam Long userId) {
-        return animalService.setUser(animalId, userId);
+    public AnimalRsDto editAnimal(@PathVariable Long animalId, @RequestBody AnimalRqDto animalRqDto) {
+        return animalService.editAnimal(animalId, animalRqDto);
     }
 
     @Operation(summary = "Одно животное по id")

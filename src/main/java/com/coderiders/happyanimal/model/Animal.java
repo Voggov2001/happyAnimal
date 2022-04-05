@@ -47,8 +47,8 @@ public class Animal {
     @Column
     private String location;
 
-    @Column
-    private String status;
+    @ManyToOne
+    private AnimalStatus status;
 
     @Column(name = "features_of_keeping")
     private String featuresOfKeeping;
