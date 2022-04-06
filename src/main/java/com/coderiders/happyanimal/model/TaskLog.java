@@ -13,22 +13,26 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tasks")
-public class Task {
+@Table(name = "task_log")
+public class TaskLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "task_id")
+    private Long taskId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "type")
     private TaskType taskType;
 
-    @Column(name = "date")
+    @Column(name = "date_expires")
     @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
     private LocalDateTime expiresDateTime;
 
-    @Column(name = "status")
-    private boolean completed;
+    @Column(name = "date_completed")
+    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    private LocalDateTime completedDateTime;
 
     @Column(name = "repeat_type")
     @Enumerated(EnumType.STRING)

@@ -84,4 +84,11 @@ public class TaskService {
                 .collect(Collectors.toList());
         return new PageImpl<>(tasks, pageable, pageable.getOffset());
     }
+
+    public TaskRsDto updateTask(Long taskId, TaskRqDto taskRqDto) {
+        taskTypeRepository.save(new TaskType(taskRqDto.getType()));
+        Task task = taskMapper.mapToTask(taskRqDto);
+        task.setId(taskId);
+        return taskMapper.mapToRsDto(taskRepository.save(task));
+    }
 }

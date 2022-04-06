@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -20,9 +17,13 @@ public class TaskRsDto {
     @NotNull
     private String type;
     @NotNull
-    String dateTime;
+    private String expiresDateTime;
     @NotNull
     private boolean completed;
     @NotNull
     private String repeatType;
+    private String note;
+    private Long animalId;
+    private String animalName;
+    private String animalKind;
 }

@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.mapper;
 
+import com.coderiders.happyanimal.enums.RepeatType;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.Task;
 import com.coderiders.happyanimal.model.TaskType;
@@ -23,9 +24,9 @@ public class TaskMapper {
     public Task mapToTask(TaskRqDto dto) {
         return Task.builder()
                 .taskType(new TaskType(dto.getType()))
-                .localDateTime(dto.getLocalDateTime())
-                .completed(false)
-                .repeatType(dto.getRepeatType())
+                .expiresDateTime(dto.getExpiresDateTime())
+                .completed(dto.isCompleted())
+                .repeatType(RepeatType.getByString(dto.getRepeatType()))
                 .animal(animalRepository.findById(dto.getAnimalId()).orElseThrow(()->new NotFoundException("Животное не найдено")))
                 .build();
     }
@@ -35,9 +36,13 @@ public class TaskMapper {
         return TaskRsDto.builder()
                 .id(task.getId())
                 .type(task.getTaskType().getType())
-                .dateTime(task.getLocalDateTime().toString())
+                .expiresDateTime(task.getExpiresDateTime().toString())
                 .completed(task.isCompleted())
-                .repeatType(task.getRepeatType())
+                .repeatType(task.getRepeatType().getString())
+                .animalId(task.getAnimal().getId())
+                .animalName(task.getAnimal().getName())
+                .animalKind(task.getAnimal().getAnimalKind().getKind())
+                .note(task.getNote())
                 .build();
     }
 }

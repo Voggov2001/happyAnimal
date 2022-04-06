@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.enums.RepeatType;
 import com.coderiders.happyanimal.model.dto.TaskRqDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
@@ -15,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
@@ -27,7 +30,8 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "Добавление задачи")
+    @Operation(summary = "Добавление задачи",
+            description = "Внимание, тип повторения должен быть одним из существующих")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskRsDto> addTask(@Validated @RequestBody TaskRqDto taskDto) {
         var created = taskService.saveTask(taskDto);
@@ -54,5 +58,21 @@ public class TaskController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<TaskRsDto> getAllTasks(Pageable pageable) {
         return taskService.getAll(pageable);
+    }
+
+    @Operation(summary = "Все типы повторения")
+    @GetMapping(path = "/repeat-types")
+    public List<String> getAllRepeatTypes(){
+        return RepeatType.getValues();
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto){
+        var updated = taskService.updateTask(id, taskRqDto);
+        var url = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(updated.getId())
+                .toUri();
+        return ResponseEntity.created(url).body(updated);
     }
 }
