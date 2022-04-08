@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
@@ -17,13 +16,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class AnimalKindService {
-    AnimalKindRepository animalKindRepository;
-    AnimalKindMapper animalKindMapper;
+    private final AnimalKindRepository animalKindRepository;
+    private final AnimalKindMapper animalKindMapper;
 
     @Autowired
-    public AnimalKindService(AnimalKindRepository animalKindRepository, AnimalKindMapper animalKindMapper) {
+    public AnimalKindService(AnimalKindRepository animalKindRepository, AnimalKindMapper animalKindMapper) throws IOException {
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
+        createAll();
     }
 
 
@@ -75,7 +75,7 @@ public class AnimalKindService {
     public List<AnimalKindDto> getAll() {
         return animalKindRepository.findAll()
                 .stream()
-                .map(animalKind -> animalKindMapper.mapToDto(animalKind))
+                .map(animalKindMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 

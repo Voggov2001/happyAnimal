@@ -28,7 +28,7 @@ public class Animal {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Task> tasks;
 
     @Column(name = "age")
@@ -47,15 +47,12 @@ public class Animal {
     @Column
     private String location;
 
-    @Column
-    private String status;
+    @ManyToOne
+    private AnimalStatus status;
 
     @Column(name = "features_of_keeping")
     private String featuresOfKeeping;
 
     @Column(name = "external_features")
     private String externalFeatures;
-
-    @Column(name = "local_date")
-    private LocalDate localDate;
 }

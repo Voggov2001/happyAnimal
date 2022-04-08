@@ -48,7 +48,7 @@ public class AnimalController {
     }
 
     @Operation(summary = "Животные конкретного пользователя")
-    @GetMapping(path = "/{userId}")
+    @GetMapping(path = "/user/{userId}")
     public Page<AnimalRsDto> getUserAnimals(@PathVariable @Parameter(name = "User Id", example = "1") Long userId,
                                             Pageable pageable) {
         return animalService.getAllByUserId(userId, pageable);
@@ -61,10 +61,10 @@ public class AnimalController {
         return animalService.getAnimalAllTasks(animalId, pageable);
     }
 
-    @Operation(summary = "Связать животное и пользователя")
+    @Operation(summary = "Изменить животное")
     @PutMapping(path = "/{animalId}")
-    public AnimalRsDto setUser(@PathVariable Long animalId, @RequestParam Long userId) {
-        return animalService.setUser(animalId, userId);
+    public AnimalRsDto editAnimal(@PathVariable Long animalId, @RequestBody AnimalRqDto animalRqDto) {
+        return animalService.editAnimal(animalId, animalRqDto);
     }
 
     @Operation(summary = "Одно животное по id")
