@@ -89,7 +89,7 @@ public class SchedulerService {
         tasks.forEach(task -> {
             if (LocalDateTime.now().plusMinutes(10).plusSeconds(2).isAfter(task.getExpiresDateTime())) {
                 message.setContent("Скоро завершится задача" + task.getId());
-                this.simpMessagingTemplate.convertAndSend("/topic/public", message);
+                this.simpMessagingTemplate.convertAndSend("/topic/" + task.getAnimal().getUser().getId(), message);
             }
         });
     }
