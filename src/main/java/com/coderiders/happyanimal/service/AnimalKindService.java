@@ -26,7 +26,6 @@ public class AnimalKindService {
         createAll();
     }
 
-
     @Transactional
     public void createAll() throws IOException {
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Бурый медведь"),
@@ -35,7 +34,7 @@ public class AnimalKindService {
                 "src/main/resources/assets/elephant.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Лисица обыкновенная"),
                 "src/main/resources/assets/fox.svg");
-        createKind(new AnimalKindDto("Млекопитающие", "парнокопытные", "Жираф"),
+        createKind(new AnimalKindDto("Млекопитающие", "Парнокопытные", "Жираф"),
                 "src/main/resources/assets/giraffe.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Непарнокопытные", "Лошадь"),
                 "src/main/resources/assets/horse.svg");
@@ -60,6 +59,7 @@ public class AnimalKindService {
         createKind(new AnimalKindDto("Млекопитающие", "Непарнокопытные", "Зебра"),
                 "src/main/resources/assets/zebra.svg");
     }
+
 
     @Transactional
     public void createKind(AnimalKindDto dto, String filename) throws IOException {

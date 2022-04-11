@@ -37,7 +37,7 @@ public class Inspection {
     private LocalDateTime dateTime;
     @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Column(name = "animal_list")
-    @JoinTable(name = "animal_like",
+    @JoinTable(name = "animal_inspection",
             joinColumns = {@JoinColumn(name = "inpection_id")},
             inverseJoinColumns = {@JoinColumn(name = "animal_id")})
     private List<Animal> animalList;

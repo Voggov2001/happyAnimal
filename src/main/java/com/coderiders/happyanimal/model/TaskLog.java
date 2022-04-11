@@ -22,6 +22,9 @@ public class TaskLog {
     @Column(name = "task_id")
     private Long taskId;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "type")
     private TaskType taskType;
@@ -41,6 +44,7 @@ public class TaskLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "animal_id")
     private Animal animal;
+
 
     @Column(name = "note")
     private String note;//заметка, комментарий
