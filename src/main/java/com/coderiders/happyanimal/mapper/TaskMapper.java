@@ -38,7 +38,7 @@ public class TaskMapper {
                 .type(task.getTaskType().getType())
                 .expiresDateTime(task.getExpiresDateTime().toString())
                 .completed(task.isCompleted())
-                .repeatType(task.getRepeatType().getString())
+                .repeatType(task.getRepeatType().getTypeName())
                 .animalId(task.getAnimal().getId())
                 .animalName(task.getAnimal().getName())
                 .animalKind(task.getAnimal().getAnimalKind().getKind())

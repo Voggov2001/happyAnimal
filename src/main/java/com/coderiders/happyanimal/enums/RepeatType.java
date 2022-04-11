@@ -17,17 +17,17 @@ public enum RepeatType {
     EVERY_MONTH("Каждый месяц"),
     EVERY_YEAR("Каждый год");
 
-    final String string;
+    final String typeName;
 
     public static List<String> getValues(){
         return Arrays.stream(values())
-                .map(repeatType -> repeatType.string)
+                .map(repeatType -> repeatType.typeName)
                 .collect(Collectors.toList());
     }
 
     public static RepeatType getByString(String string){
         return Arrays.stream(values())
-                .filter(value-> Objects.equals(value.string, string))
+                .filter(value-> Objects.equals(value.typeName, string))
                 .findFirst()
                 .orElse(ONCE);
     }
