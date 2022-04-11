@@ -38,6 +38,7 @@ public class AnimalStatusService {
         saveAnimalStatus(new AnimalStatusRqDto("В спячке", false));
         saveAnimalStatus(new AnimalStatusRqDto("Продан", false));
         saveAnimalStatus(new AnimalStatusRqDto("Новорожденный", false));
+        saveAnimalStatus(new AnimalStatusRqDto("На лечении", false));
     }
     @Transactional
     public AnimalStatusRsDto saveAnimalStatus(AnimalStatusRqDto animalStatusRqDto) {

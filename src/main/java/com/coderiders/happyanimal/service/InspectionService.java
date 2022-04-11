@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 @Service
 public class InspectionService {
-    private InspectionRepository inspectionRepository;
-    private InspectionMapper inspectionMapper;
+    private final InspectionRepository inspectionRepository;
+    private final InspectionMapper inspectionMapper;
 
     @Autowired
     public InspectionService(InspectionRepository inspectionRepository, InspectionMapper inspectionMapper) {
@@ -33,8 +33,8 @@ public class InspectionService {
 
     @Transactional
     public InspectionRsDto getById(Long id) {
-        Inspection inspectional = (Inspection)this.inspectionRepository.getById(id);
-        return this.inspectionMapper.mapToRsDto(inspectional);
+        Inspection inspection = this.inspectionRepository.getById(id);
+        return this.inspectionMapper.mapToRsDto(inspection);
     }
 
     @Transactional

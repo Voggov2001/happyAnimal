@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping("/animals")
-@Tag(name = "animal-controller", description = "Контроллер животных")
+@Tag(name = "animal-controller", description = "Контроллер животных\n Поля вида и статуса должны быть уже существующими")
 public class AnimalController {
     private final AnimalService animalService;
 
