@@ -3,6 +3,7 @@ package com.coderiders.happyanimal.service;
 import com.coderiders.happyanimal.mapper.TaskLogMapper;
 import com.coderiders.happyanimal.model.dto.TaskLogRsDto;
 import com.coderiders.happyanimal.repository.TaskLogRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class TaskLogService {
     private final TaskLogRepository taskLogRepository;
@@ -55,8 +57,7 @@ public class TaskLogService {
 
     @Transactional
     public Page<TaskLogRsDto> getAllByDateBetween(Pageable pageable, LocalDateTime sinceDateTime, LocalDateTime untilDateTime) {
-        return taskLogRepository.getAllByCompletedDateTimeBetween(pageable, sinceDateTime, untilDateTime)
-                .map(taskLogMapper::toRsDto);
+        return taskLogRepository.getAllByCompletedDateTimeBetween(pageable, sinceDateTime, untilDateTime).map(taskLogMapper::toRsDto);
 
     }
 }

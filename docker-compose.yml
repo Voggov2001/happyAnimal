@@ -5,7 +5,7 @@ services:
     container_name: "happy_animal_db"
     image: "postgres:14-alpine"
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
@@ -25,6 +25,6 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_SERVLET_CONTEXT-PATH=/api
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - db
