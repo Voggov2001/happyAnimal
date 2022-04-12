@@ -47,7 +47,7 @@ public class AnimalKindService {
                 "src/main/resources/assets/owl.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Большая панда"),
                 "src/main/resources/assets/panda.svg");
-        createKind(new AnimalKindDto("Птицы", "Пингвинообразные", "Пингвин иимператорский"),
+        createKind(new AnimalKindDto("Птицы", "Пингвинообразные", "Пингвин императорский"),
                 "src/main/resources/assets/peng.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Енот-полоскун"),
                 "src/main/resources/assets/raccoon.svg");
