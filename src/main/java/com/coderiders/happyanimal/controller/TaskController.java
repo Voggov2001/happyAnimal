@@ -42,22 +42,16 @@ public class TaskController {
         return ResponseEntity.created(url).body(created);
     }
 
-    @Operation(summary = "Задачи конкретного пользователя")
-    @GetMapping(path = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getUserTasks(@PathVariable Long userId, Pageable pageable) {
-        return taskService.getByUserId(userId, pageable);
-    }
-
-    @Operation(summary = "Задачи конкретного животного")
-    @GetMapping(path = "/animal/{animalId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getAnimalTasks(@PathVariable Long animalId, Pageable pageable) {
-        return taskService.getByAnimalId(animalId, pageable);
-    }
-
-    @Operation(summary = "Все задачи")
+    @Operation(summary = "Все задачи",
+            description = "Если одно из полей представлено, то искать будет только по нему")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getAllTasks(Pageable pageable) {
-        return taskService.getAll(pageable);
+    public Page<TaskRsDto> getAllTasks(Pageable pageable, Long userId, Long animalId) {
+        return taskService.getAll(pageable, userId, animalId);
+    }
+
+    @GetMapping(path = "/{taskId}")
+    public  TaskRsDto getTaskById(@PathVariable Long taskId){
+        return taskService.getById(taskId);
     }
 
     @Operation(summary = "Все типы повторения")

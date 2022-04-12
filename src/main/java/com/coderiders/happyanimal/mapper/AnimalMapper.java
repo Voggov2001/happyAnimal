@@ -45,6 +45,7 @@ public class AnimalMapper {
                 .externalFeatures(dto.getExternalFeatures())
                 .user(userRepository.findById(dto.getUserId()).orElse(null))
                 .status(animalStatusRepository.findById(dto.getStatus()).orElse(null))
+                .location(dto.getLocation())
                 .build();
     }
 

@@ -11,7 +11,7 @@ public class AnimalKindDto {
     private String animalClass;
     private String squad;
     private String kind;
-    private byte[] pic;
+    private String pic;
 
     public AnimalKindDto(String animalClass, String squad, String kind) {
         this.animalClass = animalClass;
