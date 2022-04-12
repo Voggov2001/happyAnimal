@@ -29,21 +29,21 @@ public class AnimalKindController {
     }
 
     @Operation(summary = "Все виды (Объекты) из базы")
-    @GetMapping(path = "/all")
+    @GetMapping
     public List<AnimalKindDto> getAllKinds() {
         return animalKindService.getAll();
     }
 
     @Operation(summary = "Все строки с названиями видов")
-    @GetMapping
-    public List<String> getAllKindnames() {
+    @GetMapping(path = "only-kinds")
+    public List<String> getAllKindNames() {
         return animalKindService.getAllOnlyKinds();
     }
 
     @Operation(summary = "Возвращает объект по названию вида")
-    @GetMapping(path = "/{kindname}")
-    public AnimalKindDto getOneByKindName(@PathVariable String kindname) {
-        return animalKindService.getByKindName(kindname);
+    @GetMapping(path = "/{kindName}")
+    public AnimalKindDto getOneByKindName(@PathVariable String kindName) {
+        return animalKindService.getByKindName(kindName);
     }
 
     @Operation(summary = "Сбрасывает таблицу видов")

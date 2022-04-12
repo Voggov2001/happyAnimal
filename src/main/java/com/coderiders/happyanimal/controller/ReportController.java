@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/reports")
@@ -28,8 +27,8 @@ public class ReportController {
 
     @Operation(summary = "Все созданные отчеты")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ReportDto> getAllReports(Pageable pageable) {
-        return reportService.getAllReportsDTO(pageable);
+    public Page<ReportDto> getAllReports(Pageable pageable, Long userId) {
+        return reportService.getAllReportsDTO(pageable, userId);
     }
 
     @Operation(summary = "Создать отчет")
@@ -41,11 +40,5 @@ public class ReportController {
                 .buildAndExpand(created.getId())
                 .toUri();
         return ResponseEntity.created(url).body(created);
-    }
-
-    @Operation(summary = "Отчеты конкретного пользователя")
-    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<ReportDto> getReportsByUserId(@PathVariable Long userId, Pageable pageable) {
-        return reportService.getReportDTOByUserId(userId, pageable);
     }
 }

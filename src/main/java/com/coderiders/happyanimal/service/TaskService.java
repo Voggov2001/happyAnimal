@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,16 +52,19 @@ public class TaskService {
     }
 
     @Transactional
-    public Page<TaskRsDto> getAll(Pageable pageable) {
-        Page<Task> allTasks = taskRepository.findAll(pageable);
-        if (allTasks.isEmpty()) {
-            throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_TASK);
+    public Page<TaskRsDto> getAll(Pageable pageable, Long userId, Long animalId) {
+        if (Optional.ofNullable(userId).isPresent()) {
+            return getByUserId(pageable, userId);
+        } else if (Optional.ofNullable(animalId).isPresent()) {
+            return getByAnimalId(pageable, animalId);
+        } else {
+            Page<Task> allTasks = taskRepository.findAll(pageable);
+            return allTasks.map(taskMapper::mapToRsDto);
         }
-        return allTasks.map(taskMapper::mapToRsDto);
     }
 
     @Transactional
-    public Page<TaskRsDto> getByUserId(Long userId, Pageable pageable) {
+    public Page<TaskRsDto> getByUserId(Pageable pageable, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_USER));
         Page<Animal> animals = animalRepository.findAllByUser(user, pageable);
@@ -75,7 +79,7 @@ public class TaskService {
         return new PageImpl<>(tasks, pageable, pageable.getOffset());
     }
 
-    public Page<TaskRsDto> getByAnimalId(Long animalId, Pageable pageable) {
+    public Page<TaskRsDto> getByAnimalId(Pageable pageable, Long animalId) {
         Animal animal = animalRepository.findById(animalId).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL));
         List<TaskRsDto> tasks = animal.getTasks()
@@ -90,5 +94,10 @@ public class TaskService {
         Task task = taskMapper.mapToTask(taskRqDto);
         task.setId(taskId);
         return taskMapper.mapToRsDto(taskRepository.save(task));
+    }
+
+    public TaskRsDto getById(Long taskId) {
+        return taskMapper.mapToRsDto(taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_TASK)));
     }
 }

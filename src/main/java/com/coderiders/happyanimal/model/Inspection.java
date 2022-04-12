@@ -7,19 +7,9 @@ package com.coderiders.happyanimal.model;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 
 @Entity
@@ -34,7 +24,7 @@ public class Inspection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    private LocalDate date;
     @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Column(name = "animal_list")
     @JoinTable(name = "animal_inspection",

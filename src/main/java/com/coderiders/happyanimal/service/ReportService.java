@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReportService {
@@ -40,7 +41,10 @@ public class ReportService {
     }
 
     @Transactional
-    public Page<ReportDto> getAllReportsDTO(Pageable pageable) {
+    public Page<ReportDto> getAllReportsDTO(Pageable pageable, Long userId) {
+        if (Optional.ofNullable(userId).isPresent()){
+            return getReportDTOByUserId(pageable, userId);
+        }
         Page<Report> allReports = reportRepository.findAll(pageable);
         if (allReports.isEmpty()) {
             throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_REPORT);
@@ -49,7 +53,7 @@ public class ReportService {
     }
 
     @Transactional
-    public Page<ReportDto> getReportDTOByUserId(Long userId, Pageable pageable) {
+    public Page<ReportDto> getReportDTOByUserId(Pageable pageable, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_USER));
         Page<Report> reportList = reportRepository.findAllByUser(user, pageable);

@@ -1,6 +1,7 @@
 package com.coderiders.happyanimal.service;
 
 import com.coderiders.happyanimal.mapper.AnimalKindMapper;
+import com.coderiders.happyanimal.model.AnimalKind;
 import com.coderiders.happyanimal.model.dto.AnimalKindDto;
 import com.coderiders.happyanimal.repository.AnimalKindRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class AnimalKindService {
                 "src/main/resources/assets/owl.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Большая панда"),
                 "src/main/resources/assets/panda.svg");
-        createKind(new AnimalKindDto("Птицы", "Пингвинообразные", "Пингвин иимператорский"),
+        createKind(new AnimalKindDto("Птицы", "Пингвинообразные", "Пингвин императорский"),
                 "src/main/resources/assets/peng.svg");
         createKind(new AnimalKindDto("Млекопитающие", "Хищные", "Енот-полоскун"),
                 "src/main/resources/assets/raccoon.svg");
@@ -63,12 +64,12 @@ public class AnimalKindService {
 
     @Transactional
     public void createKind(AnimalKindDto dto, String filename) throws IOException {
-        System.out.println();
-        dto.setPic(Base64.getEncoder()
+        AnimalKind animalKind = animalKindMapper.mapToAnimalKind(dto);
+        animalKind.setPic(Base64.getEncoder()
                 .encode(Files
                         .readAllBytes(new File(filename)
                                 .toPath())));
-        animalKindRepository.save(animalKindMapper.mapToAnimalKind(dto));
+        animalKindRepository.save(animalKind);
     }
 
     @Transactional

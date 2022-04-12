@@ -99,7 +99,7 @@ public class SchedulerService {
     public void setAgeEveryYear() {
         List<Animal> animals = animalRepository.findAll();
         animals.forEach(animal -> {
-            if(!Objects.equals(animal.getStatus().getName(), "Новорожденный")){
+            if (!Objects.equals(animal.getStatus().getName(), "Новорожденный")) {
                 animal.setAge(animal.getAge() + 1);
                 animalRepository.save(animal);
             }
