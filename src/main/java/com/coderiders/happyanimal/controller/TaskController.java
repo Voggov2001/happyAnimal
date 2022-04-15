@@ -6,7 +6,6 @@ import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
-@Slf4j
 public class TaskController {
     private final TaskService taskService;
 
@@ -44,24 +42,25 @@ public class TaskController {
 
     @Operation(summary = "Все задачи",
             description = "Если одно из полей представлено, то искать будет только по нему")
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getAllTasks(Pageable pageable, Long userId, Long animalId) {
+    @GetMapping
+    public Page<TaskRsDto> getAllTasks(Pageable pageable, @RequestParam(required = false) Long userId,
+                                       @RequestParam(required = false) Long animalId) {
         return taskService.getAll(pageable, userId, animalId);
     }
 
     @GetMapping(path = "/{taskId}")
-    public  TaskRsDto getTaskById(@PathVariable Long taskId){
+    public TaskRsDto getTaskById(@PathVariable Long taskId) {
         return taskService.getById(taskId);
     }
 
     @Operation(summary = "Все типы повторения")
     @GetMapping(path = "/repeat-types")
-    public List<String> getAllRepeatTypes(){
+    public List<String> getAllRepeatTypes() {
         return RepeatType.getValues();
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto){
+    public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto) {
         var updated = taskService.updateTask(id, taskRqDto);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

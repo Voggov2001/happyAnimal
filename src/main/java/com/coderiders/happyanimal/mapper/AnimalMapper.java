@@ -59,6 +59,7 @@ public class AnimalMapper {
         AnimalRsDto animalRsDto = AnimalRsDto.builder()
                 .id(animal.getId())
                 .name(animal.getName())
+                .age(animal.getAge())
                 .gender(animal.getGender())
                 .height(animal.getHeight())
                 .weight(animal.getWeight())
