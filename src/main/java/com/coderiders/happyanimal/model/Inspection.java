@@ -5,6 +5,7 @@
 
 package com.coderiders.happyanimal.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Inspection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "date_time")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Column(name = "animal_list")

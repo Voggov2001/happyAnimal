@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @NoArgsConstructor
@@ -89,7 +90,9 @@ public class SchedulerService {
         tasks.forEach(task -> {
             if (LocalDateTime.now().plusMinutes(10).plusSeconds(2).isAfter(task.getExpiresDateTime())) {
                 message.setContent("Скоро завершится задача" + task.getId());
-                this.simpMessagingTemplate.convertAndSend("/topic/" + task.getAnimal().getUser().getId(), message);
+                if (Optional.ofNullable(task.getAnimal().getUser()).isPresent()) {
+                    this.simpMessagingTemplate.convertAndSend("/topic/" + task.getAnimal().getUser().getId(), message);
+                }
             }
         });
     }
