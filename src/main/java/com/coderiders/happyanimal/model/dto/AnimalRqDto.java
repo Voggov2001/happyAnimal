@@ -24,8 +24,10 @@ public class AnimalRqDto {
     private double weight;
     @NotNull
     private String kind;
+    @NotNull
     private String status;
     private Long userId;
     private String featuresOfKeeping;
     private String externalFeatures;
+    private String location;
 }

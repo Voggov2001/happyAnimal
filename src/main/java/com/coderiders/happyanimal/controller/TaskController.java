@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.enums.RepeatType;
 import com.coderiders.happyanimal.model.dto.TaskRqDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
@@ -15,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/tasks")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
@@ -27,7 +30,8 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @Operation(summary = "Добавление задачи")
+    @Operation(summary = "Добавление задачи",
+            description = "Внимание, тип повторения должен быть одним из существующих")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskRsDto> addTask(@Validated @RequestBody TaskRqDto taskDto) {
         var created = taskService.saveTask(taskDto);
@@ -38,21 +42,31 @@ public class TaskController {
         return ResponseEntity.created(url).body(created);
     }
 
-    @Operation(summary = "Задачи конкретного пользователя")
-    @GetMapping(path = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getUserTasks(@PathVariable Long userId, Pageable pageable) {
-        return taskService.getByUserId(userId, pageable);
-    }
-
-    @Operation(summary = "Задачи конкретного животного")
-    @GetMapping(path = "/animal/{animalId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getAnimalTasks(@PathVariable Long animalId, Pageable pageable) {
-        return taskService.getByAnimalId(animalId, pageable);
-    }
-
-    @Operation(summary = "Все задачи")
+    @Operation(summary = "Все задачи",
+            description = "Если одно из полей представлено, то искать будет только по нему")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<TaskRsDto> getAllTasks(Pageable pageable) {
-        return taskService.getAll(pageable);
+    public Page<TaskRsDto> getAllTasks(Pageable pageable, Long userId, Long animalId) {
+        return taskService.getAll(pageable, userId, animalId);
+    }
+
+    @GetMapping(path = "/{taskId}")
+    public  TaskRsDto getTaskById(@PathVariable Long taskId){
+        return taskService.getById(taskId);
+    }
+
+    @Operation(summary = "Все типы повторения")
+    @GetMapping(path = "/repeat-types")
+    public List<String> getAllRepeatTypes(){
+        return RepeatType.getValues();
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto){
+        var updated = taskService.updateTask(id, taskRqDto);
+        var url = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(updated.getId())
+                .toUri();
+        return ResponseEntity.created(url).body(updated);
     }
 }
