@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class Exhibition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "animal_id")

@@ -9,8 +9,7 @@ import com.coderiders.happyanimal.repository.AnimalStatusRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class AnimalMapper {
@@ -36,23 +35,21 @@ public class AnimalMapper {
         this.animalStatusRepository = animalStatusRepository;
     }
 
+    @Transactional
     public Animal mapToAnimal(AnimalRqDto dto) {
-        Animal animal =  Animal.builder()
+        return Animal.builder()
                 .name(dto.getName())
                 .gender(dto.getGender())
                 .age(dto.getAge())
                 .height(dto.getHeight())
                 .weight(dto.getWeight())
-                .animalKind(animalKindRepository.findById(dto.getKind()).orElseThrow(()-> new NotFoundException("Вид не найден")))
+                .animalKind(animalKindRepository.findById(dto.getKind()).orElseThrow(() -> new NotFoundException("Вид не найден")))
                 .featuresOfKeeping(dto.getFeaturesOfKeeping())
                 .externalFeatures(dto.getExternalFeatures())
-                .status(animalStatusRepository.findById(dto.getStatus()).orElse(null))
+                .status(animalStatusRepository.findById(dto.getStatus()).orElseThrow(() -> new NotFoundException("Статус не найден")))
                 .location(dto.getLocation())
+                .user(userRepository.findById(dto.getUserId()).orElse(null))
                 .build();
-        if (Optional.ofNullable(dto.getUserId()).isPresent()){
-            animal.setUser(userRepository.findById(dto.getUserId()).orElse(null));
-        }
-        return animal;
     }
 
     public AnimalRsDto mapToDto(Animal animal) {
