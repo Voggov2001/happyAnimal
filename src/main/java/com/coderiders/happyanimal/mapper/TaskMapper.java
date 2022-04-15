@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class TaskMapper {
     private final AnimalRepository animalRepository;
@@ -28,6 +30,7 @@ public class TaskMapper {
                 .completed(dto.isCompleted())
                 .repeatType(RepeatType.getByString(dto.getRepeatType()))
                 .animal(animalRepository.findById(dto.getAnimalId()).orElseThrow(()->new NotFoundException("Животное не найдено")))
+                .note(dto.getNote())
                 .build();
     }
 
@@ -36,7 +39,8 @@ public class TaskMapper {
         return TaskRsDto.builder()
                 .id(task.getId())
                 .type(task.getTaskType().getType())
-                .expiresDateTime(task.getExpiresDateTime().toString())
+                .expiresDateTime(task.getExpiresDateTime()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")))
                 .completed(task.isCompleted())
                 .repeatType(task.getRepeatType().getTypeName())
                 .animalId(task.getAnimal().getId())
