@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,6 +29,7 @@ public class UserController {
 
     @Operation(summary = "Добавление нового")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<UserRsDto> addUser(@Valid @RequestBody UserRqDto userForm) {
         var created = userService.saveUser(userForm);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -39,12 +41,14 @@ public class UserController {
 
     @Operation(summary = "Все пользователи")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('admin')")
     public Page<UserRsDto> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);
     }
 
     @Operation(summary = "Пользователь по его id")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('admin')")
     public UserRsDto getById(@PathVariable Long id) {
         return userService.getById(id);
     }
