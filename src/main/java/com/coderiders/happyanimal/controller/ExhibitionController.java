@@ -52,4 +52,9 @@ public class ExhibitionController {
                 .toUri();
         return ResponseEntity.created(url).body(created);
     }
+    @Operation(summary = "Удаление выставки по id")
+    @DeleteMapping(value = "/{id}")
+    public void deleteExhibitionById(@PathVariable Long id){
+        exhibitionService.deleteExhibitionById(id);
+    }
 }

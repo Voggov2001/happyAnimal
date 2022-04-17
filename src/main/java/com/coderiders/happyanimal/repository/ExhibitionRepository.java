@@ -11,4 +11,5 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     Optional<Exhibition> findById(Long id);
     Page<Exhibition> findAll(Pageable pageable);
     Optional<Exhibition> findByDate(String date);
+    void deleteExhibitionById(Long id);
 }

@@ -42,4 +42,9 @@ public class ExhibitionService {
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND));
         return exhibitionMapper.mapToDto(exhibition);
     }
+    @Transactional
+    public void deleteExhibitionById(Long id){
+        exhibitionRepository.deleteExhibitionById(id);
+    }
+
 }
