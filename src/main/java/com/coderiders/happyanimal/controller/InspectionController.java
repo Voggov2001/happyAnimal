@@ -5,16 +5,18 @@
 
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.model.dto.AnimalRsDto;
+import com.coderiders.happyanimal.model.dto.InspectionRqDto;
 import com.coderiders.happyanimal.model.dto.InspectionRsDto;
 import com.coderiders.happyanimal.service.InspectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping({"/inspection"})
@@ -26,17 +28,25 @@ public class InspectionController {
         this.inspectionService = service;
     }
 
-    @Operation(summary = "Записать животное на осмотр")
-    @PutMapping(produces = {"application/json"})
-    public ResponseEntity<Void> addAnimalToInspection(Long animalId, LocalDate localDate) {
-        inspectionService.addAnimalToInspection(animalId, localDate);
-        return ResponseEntity.ok().build();
+    @PutMapping(path = "/{animalId}")
+    public InspectionRsDto addAnimal(LocalDate localDate, @PathVariable Long animalId) {
+        return inspectionService.addAnimalToInspection(localDate, animalId);
+    }
+
+    @PutMapping(path = "/-/{animalId}")
+    public InspectionRsDto deleteAnimal(LocalDate localDate, @PathVariable Long animalId){
+        return inspectionService.deleteAnimal(localDate, animalId);
+    }
+
+    @PutMapping
+    public InspectionRsDto updateInspection(InspectionRqDto inspectionRqDto) {
+        return inspectionService.update(inspectionRqDto);
     }
 
     @Operation(summary = "Все запланированные осмотры")
     @GetMapping(produces = {"application/json"})
     public Page<InspectionRsDto> getAll(Pageable pageable) {
-        return this.inspectionService.getAll(pageable);
+        return inspectionService.getAll(pageable);
     }
 
     @Operation(summary = "Осмотр по id")
@@ -44,4 +54,16 @@ public class InspectionController {
     public InspectionRsDto getById(@PathVariable Long id) {
         return this.inspectionService.getById(id);
     }
+
+    @GetMapping(path = "/{date}")
+    public InspectionRsDto getByDate(@PathVariable LocalDate date) {
+        return inspectionService.getByDate(date);
+    }
+
+    @GetMapping(path = "/{id}/animals")
+    public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
+        return inspectionService.getAnimals(id);
+    }
+
+
 }
