@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
 import com.coderiders.happyanimal.service.ExhibitionService;
@@ -52,9 +53,16 @@ public class ExhibitionController {
                 .toUri();
         return ResponseEntity.created(url).body(created);
     }
+
     @Operation(summary = "Удаление выставки по id")
     @DeleteMapping(value = "/{id}")
-    public void deleteExhibitionById(@PathVariable Long id){
+    public void deleteExhibitionById(@PathVariable Long id) {
         exhibitionService.deleteExhibitionById(id);
+    }
+
+    @Operation(summary = "Добавление животного на выставку")
+    @PostMapping
+    public void addAnimalIntoExhibition(@RequestParam AnimalRqDto animalRqDto, @RequestParam Long id) {
+        exhibitionService.addAnimalIntoExhibition(animalRqDto, id);
     }
 }

@@ -1,8 +1,11 @@
 package com.coderiders.happyanimal.service;
 
 import com.coderiders.happyanimal.exceptions.NotFoundException;
+import com.coderiders.happyanimal.mapper.AnimalMapper;
 import com.coderiders.happyanimal.mapper.ExhibitionMapper;
+import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.Exhibition;
+import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
 import com.coderiders.happyanimal.repository.ExhibitionRepository;
@@ -16,12 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final ExhibitionMapper exhibitionMapper;
+    private final AnimalService animalService;
+    private final AnimalMapper animalMapper;
     private static final String ERROR_MESSAGE_NOT_FOUND = "Выставка не найдена";
 
     @Autowired
-    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper) {
+    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper, AnimalService animalService,AnimalMapper animalMapper) {
         this.exhibitionRepository = exhibitionRepository;
         this.exhibitionMapper = exhibitionMapper;
+        this.animalService = animalService;
+        this.animalMapper = animalMapper;
     }
 
     @Transactional
@@ -42,9 +49,18 @@ public class ExhibitionService {
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND));
         return exhibitionMapper.mapToDto(exhibition);
     }
+
     @Transactional
-    public void deleteExhibitionById(Long id){
+    public void deleteExhibitionById(Long id) {
         exhibitionRepository.deleteExhibitionById(id);
     }
+
+    @Transactional
+    public void addAnimalIntoExhibition(AnimalRqDto animalRqDto, Long id) {
+        Animal animal = animalMapper.mapToAnimal(animalRqDto);
+        ExhibitionRsDto exhibition = exhibitionMapper.mapToDto(exhibitionRepository.getById(id));
+        exhibition.getAnimals().add(animal);
+    }
+
 
 }
