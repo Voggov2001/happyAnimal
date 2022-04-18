@@ -1,11 +1,11 @@
 package com.coderiders.happyanimal.mapper;
 
+import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.repository.AnimalKindRepository;
-import com.coderiders.happyanimal.repository.AnimalStatusRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,22 +17,16 @@ public class AnimalMapper {
     private final AnimalKindRepository animalKindRepository;
     private final AnimalKindMapper animalKindMapper;
     private final UserMapper userMapper;
-    private final AnimalStatusMapper animalStatusMapper;
-    private final AnimalStatusRepository animalStatusRepository;
 
     @Autowired
     public AnimalMapper(UserRepository userRepository,
                         AnimalKindRepository animalKindRepository,
                         AnimalKindMapper animalKindMapper,
-                        UserMapper userMapper,
-                        AnimalStatusMapper animalStatusMapper,
-                        AnimalStatusRepository animalStatusRepository) {
+                        UserMapper userMapper) {
         this.userRepository = userRepository;
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
         this.userMapper = userMapper;
-        this.animalStatusMapper = animalStatusMapper;
-        this.animalStatusRepository = animalStatusRepository;
     }
 
     @Transactional
@@ -46,7 +40,7 @@ public class AnimalMapper {
                 .animalKind(animalKindRepository.findById(dto.getKind()).orElseThrow(() -> new NotFoundException("Вид не найден")))
                 .featuresOfKeeping(dto.getFeaturesOfKeeping())
                 .externalFeatures(dto.getExternalFeatures())
-                .status(animalStatusRepository.findById(dto.getStatus()).orElseThrow(() -> new NotFoundException("Статус не найден")))
+                .status(AnimalStatus.getByName(dto.getStatus()))
                 .location(dto.getLocation())
                 .user(userRepository.findById(dto.getUserId()).orElse(null))
                 .build();
@@ -64,12 +58,10 @@ public class AnimalMapper {
                 .location(animal.getLocation())
                 .featuresOfKeeping(animal.getFeaturesOfKeeping())
                 .externalFeatures(animal.getExternalFeatures())
+                .status(animal.getStatus().getName())
                 .build();
         if (animal.getUser() != null) {
             animalRsDto.setUserRsDto(userMapper.mapToResponseDto(animal.getUser()));
-        }
-        if (animal.getStatus() != null) {
-            animalRsDto.setAnimalStatusRsDto(animalStatusMapper.mapToDto(animal.getStatus()));
         }
         return animalRsDto;
     }

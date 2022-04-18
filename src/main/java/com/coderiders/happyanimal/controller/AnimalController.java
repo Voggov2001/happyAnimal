@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.service.AnimalService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Validated
 @RestController
@@ -44,6 +46,11 @@ public class AnimalController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<AnimalRsDto> getAllAnimals(Pageable pageable, Long userId) {
         return animalService.getAll(pageable, userId);
+    }
+    @Operation(summary = "Статусы/состояния животных")
+    @GetMapping(path = "/states",produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAllAnimalStates() {
+        return AnimalStatus.getAllStatusNames();
     }
 
     @Operation(summary = "Изменить животное")
