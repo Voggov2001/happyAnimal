@@ -29,12 +29,12 @@ public class InspectionController {
     }
 
     @PutMapping(path = "/{animalId}")
-    public InspectionRsDto addAnimal(LocalDate localDate, @PathVariable Long animalId) {
+    public InspectionRsDto addAnimal(String localDate, @PathVariable Long animalId) {
         return inspectionService.addAnimalToInspection(localDate, animalId);
     }
 
     @PutMapping(path = "/-/{animalId}")
-    public InspectionRsDto deleteAnimal(LocalDate localDate, @PathVariable Long animalId){
+    public InspectionRsDto deleteAnimal(String localDate, @PathVariable Long animalId){
         return inspectionService.deleteAnimal(localDate, animalId);
     }
 
@@ -55,8 +55,8 @@ public class InspectionController {
         return this.inspectionService.getById(id);
     }
 
-    @GetMapping(path = "/{date}")
-    public InspectionRsDto getByDate(@PathVariable LocalDate date) {
+    @GetMapping(path = "/date/{date}")
+    public InspectionRsDto getByDate(@PathVariable String date) {
         return inspectionService.getByDate(date);
     }
 

@@ -20,7 +20,7 @@ public class InspectionRsDto {
     @Min(1L)
     private Long id;
     @NotNull
-    private LocalDate date;
+    private String date;
     @NotNull
-    private List<Animal> animalList;
+    private List<AnimalRsDto> animalList;
 }
