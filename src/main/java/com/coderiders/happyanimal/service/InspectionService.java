@@ -1,6 +1,7 @@
 package com.coderiders.happyanimal.service;
 
 import com.coderiders.happyanimal.enums.AnimalStatus;
+import com.coderiders.happyanimal.exceptions.BadRequestException;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.AnimalMapper;
 import com.coderiders.happyanimal.mapper.InspectionMapper;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,7 +63,9 @@ public class InspectionService {
     }
 
     @Transactional
-    public InspectionRsDto addAnimalToInspection(LocalDate localDate, Long animalId) {
+    public InspectionRsDto addAnimalToInspection(String date, Long animalId) {
+        LocalDate localDate = Optional.ofNullable(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
+                .orElseThrow(() -> new BadRequestException("Дата некорректна"));
         Optional<Inspection> inspectionOpt = inspectionRepository.findByDate(localDate);
         Inspection inspection;
         if (inspectionOpt.isPresent()) {
@@ -104,7 +108,9 @@ public class InspectionService {
     }
 
     @Transactional
-    public InspectionRsDto getByDate(LocalDate localDate) {
+    public InspectionRsDto getByDate(String date) {
+        LocalDate localDate = Optional.ofNullable(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
+                .orElseThrow(() -> new BadRequestException("Дата некорректна"));
         return inspectionMapper
                 .mapToRsDto(inspectionRepository.findByDate(localDate)
                         .orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_INSPECTION)));
@@ -122,11 +128,13 @@ public class InspectionService {
     }
 
     @Transactional
-    public InspectionRsDto deleteAnimal(LocalDate localDate, Long animalId){
+    public InspectionRsDto deleteAnimal(String date, Long animalId) {
+        LocalDate localDate = Optional.ofNullable(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
+                .orElseThrow(() -> new BadRequestException("Дата некорректна"));
         Inspection inspection = inspectionRepository.findByDate(localDate)
-                .orElseThrow(()-> new NotFoundException(ERROR_NOT_FOUND_INSPECTION));
+                .orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_INSPECTION));
         List<Animal> animalList = inspection.getAnimalList();
-        animalList.remove(animalRepository.findById(animalId).orElseThrow(()-> new NotFoundException(ERROR_NOT_FOUND_ANIMAL)));
+        animalList.remove(animalRepository.findById(animalId).orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_ANIMAL)));
         inspection.setAnimalList(animalList);
         return inspectionMapper.mapToRsDto(inspectionRepository.save(inspection));
     }
