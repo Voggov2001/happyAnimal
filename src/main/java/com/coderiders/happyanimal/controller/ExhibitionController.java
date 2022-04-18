@@ -1,6 +1,7 @@
 package com.coderiders.happyanimal.controller;
 
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
+import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
 import com.coderiders.happyanimal.service.ExhibitionService;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -55,14 +58,26 @@ public class ExhibitionController {
     }
 
     @Operation(summary = "Удаление выставки по id")
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public void deleteExhibitionById(@PathVariable Long id) {
         exhibitionService.deleteExhibitionById(id);
     }
 
     @Operation(summary = "Добавление животного на выставку")
-    @PostMapping
+    @PutMapping (value = "/add/{id}")
     public void addAnimalIntoExhibition(@RequestParam Long id) {
         exhibitionService.addAnimalIntoExhibition(id);
+    }
+
+    @Operation(summary = "Получение списка животных")
+    @GetMapping("/all_animals/{id}")
+    public List<AnimalRsDto> getAllAnimalFromExhibition(@PathVariable Long id) {
+        return exhibitionService.getAllAnimals(id);
+    }
+
+    @Operation(summary = "Удаление животного из выставки")
+    @DeleteMapping("delete/{id}/animal/{id}")
+    public ExhibitionRsDto deleteAnimalFromExhibition(@RequestParam Long id,@RequestParam Long animalId){
+        return exhibitionService.deleteAnimalFromExhibition(id, animalId);
     }
 }

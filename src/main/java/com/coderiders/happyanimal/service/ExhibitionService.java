@@ -17,18 +17,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final ExhibitionMapper exhibitionMapper;
+    private final AnimalMapper animalMapper;
     private final AnimalRepository animalRepository;
     private static final String ERROR_MESSAGE_NOT_FOUND = "Выставка не найдена";
 
+    private final String ERROR_NOT_FOUND_EXHIBITION = "Выставка не найден";
+    private final String ERROR_NOT_FOUND_ANIMAL = "Животное не найдено";
+
+
     @Autowired
-    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper, AnimalRepository animalRepository) {
+    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper, AnimalRepository animalRepository, AnimalMapper animalMapper) {
         this.exhibitionRepository = exhibitionRepository;
         this.exhibitionMapper = exhibitionMapper;
         this.animalRepository = animalRepository;
+        this.animalMapper = animalMapper;
     }
 
     @Transactional
@@ -62,5 +71,25 @@ public class ExhibitionService {
         exhibition.getAnimals().add(animal);
     }
 
+    @Transactional
+    public List<AnimalRsDto> getAllAnimals(Long id) {
+        return exhibitionRepository.findById(id)
+                .orElseThrow((() -> new NotFoundException(ERROR_NOT_FOUND_EXHIBITION)))
+                .getAnimals()
+                .stream()
+                .map(animalMapper::mapToDto)
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public ExhibitionRsDto deleteAnimalFromExhibition(Long id, Long animalId){
+        Exhibition exhibition = exhibitionRepository.getById(id);
+        List<Animal> animalList = exhibition.getAnimals();
+        animalList.remove(animalRepository.findById(animalId).orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_ANIMAL)));
+        exhibition.setAnimals(animalList);
+        return exhibitionMapper.mapToDto(exhibition);
+
+    }
 
 }
