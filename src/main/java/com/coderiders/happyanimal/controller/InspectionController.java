@@ -5,6 +5,7 @@
 
 package com.coderiders.happyanimal.controller;
 
+import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.model.dto.InspectionRqDto;
 import com.coderiders.happyanimal.model.dto.InspectionRsDto;
 import com.coderiders.happyanimal.service.InspectionService;
@@ -12,40 +13,57 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping({"/inspection"})
 public class InspectionController {
-    private final InspectionService service;
+    private final InspectionService inspectionService;
 
     @Autowired
     public InspectionController(InspectionService service) {
-        this.service = service;
+        this.inspectionService = service;
     }
 
-    @Operation(summary = "Добавление осмотра")
-    @PostMapping(produces = {"application/json"})
-    public ResponseEntity<InspectionRsDto> addInspection(@Validated @RequestBody InspectionRqDto dto) {
-        InspectionRsDto created = this.service.saveInspection(dto);
-        URI url = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(url).body(created);
+    @PutMapping(path = "/{animalId}")
+    public InspectionRsDto addAnimal(LocalDate localDate, @PathVariable Long animalId) {
+        return inspectionService.addAnimalToInspection(localDate, animalId);
+    }
+
+    @PutMapping(path = "/-/{animalId}")
+    public InspectionRsDto deleteAnimal(LocalDate localDate, @PathVariable Long animalId){
+        return inspectionService.deleteAnimal(localDate, animalId);
+    }
+
+    @PutMapping
+    public InspectionRsDto updateInspection(InspectionRqDto inspectionRqDto) {
+        return inspectionService.update(inspectionRqDto);
     }
 
     @Operation(summary = "Все запланированные осмотры")
     @GetMapping(produces = {"application/json"})
     public Page<InspectionRsDto> getAll(Pageable pageable) {
-        return this.service.getAll(pageable);
+        return inspectionService.getAll(pageable);
     }
 
     @Operation(summary = "Осмотр по id")
     @GetMapping(path = {"/{id}"})
     public InspectionRsDto getById(@PathVariable Long id) {
-        return this.service.getById(id);
+        return this.inspectionService.getById(id);
     }
+
+    @GetMapping(path = "/{date}")
+    public InspectionRsDto getByDate(@PathVariable LocalDate date) {
+        return inspectionService.getByDate(date);
+    }
+
+    @GetMapping(path = "/{id}/animals")
+    public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
+        return inspectionService.getAnimals(id);
+    }
+
+
 }

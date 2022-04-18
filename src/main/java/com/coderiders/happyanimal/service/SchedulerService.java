@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.MessageFromScheduler;
 import com.coderiders.happyanimal.model.Task;
@@ -102,7 +103,7 @@ public class SchedulerService {
     public void setAgeEveryYear() {
         List<Animal> animals = animalRepository.findAll();
         animals.forEach(animal -> {
-            if (!Objects.equals(animal.getStatus().getName(), "Новорожденный")) {
+            if (!Objects.equals(animal.getStatus(), AnimalStatus.NEWBORN)) {
                 animal.setAge(animal.getAge() + 1);
                 animalRepository.save(animal);
             }

@@ -1,9 +1,9 @@
 package com.coderiders.happyanimal.model;
 
+import com.coderiders.happyanimal.enums.AnimalStatus;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -47,7 +47,8 @@ public class Animal {
     @Column
     private String location;
 
-    @ManyToOne
+    @Column
+    @Enumerated(EnumType.STRING)
     private AnimalStatus status;
 
     @Column(name = "features_of_keeping")
