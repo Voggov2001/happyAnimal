@@ -62,7 +62,7 @@ public class ExhibitionController {
 
     @Operation(summary = "Добавление животного на выставку")
     @PostMapping
-    public void addAnimalIntoExhibition(@RequestParam AnimalRqDto animalRqDto, @RequestParam Long id) {
-        exhibitionService.addAnimalIntoExhibition(animalRqDto, id);
+    public void addAnimalIntoExhibition(@RequestParam Long id) {
+        exhibitionService.addAnimalIntoExhibition(id);
     }
 }

@@ -6,8 +6,10 @@ import com.coderiders.happyanimal.mapper.ExhibitionMapper;
 import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.Exhibition;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
+import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
 import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
+import com.coderiders.happyanimal.repository.AnimalRepository;
 import com.coderiders.happyanimal.repository.ExhibitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,16 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
     private final ExhibitionMapper exhibitionMapper;
-    private final AnimalService animalService;
-    private final AnimalMapper animalMapper;
+    private final AnimalRepository animalRepository;
     private static final String ERROR_MESSAGE_NOT_FOUND = "Выставка не найдена";
 
     @Autowired
-    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper, AnimalService animalService,AnimalMapper animalMapper) {
+    public ExhibitionService(ExhibitionRepository exhibitionRepository, ExhibitionMapper exhibitionMapper, AnimalRepository animalRepository) {
         this.exhibitionRepository = exhibitionRepository;
         this.exhibitionMapper = exhibitionMapper;
-        this.animalService = animalService;
-        this.animalMapper = animalMapper;
+        this.animalRepository = animalRepository;
     }
 
     @Transactional
@@ -56,8 +56,8 @@ public class ExhibitionService {
     }
 
     @Transactional
-    public void addAnimalIntoExhibition(AnimalRqDto animalRqDto, Long id) {
-        Animal animal = animalMapper.mapToAnimal(animalRqDto);
+    public void addAnimalIntoExhibition(Long id) {
+        Animal animal = animalRepository.getById(id);
         ExhibitionRsDto exhibition = exhibitionMapper.mapToDto(exhibitionRepository.getById(id));
         exhibition.getAnimals().add(animal);
     }
