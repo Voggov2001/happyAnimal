@@ -12,8 +12,8 @@ import java.util.Set;
 public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
-    private boolean isLocked;
     private Set<SimpleGrantedAuthority> authorities;
+    private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -32,21 +32,21 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return isActive;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isLocked;
+        return isActive;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return isActive;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isActive;
     }
 }

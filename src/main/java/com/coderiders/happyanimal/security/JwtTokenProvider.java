@@ -2,19 +2,34 @@ package com.coderiders.happyanimal.security;
 
 import com.coderiders.happyanimal.exceptions.UnAuthorizedException;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    @Value("${security.jwt.header}")
+
+    private final UserDetailsServiceIml userDetailsServiceIml;
+
+    @Value("${security.jwt.secret}")
     private String secretKey;
+    @Value("${security.jwt.header}")
+    private String authorisationHeader;
     @Value("${security.jwt.expiration}")
     private long validityInMilliseconds;
+
+    @Autowired
+    public JwtTokenProvider(UserDetailsServiceIml userDetailsServiceIml) {
+        this.userDetailsServiceIml = userDetailsServiceIml;
+    }
 
     @PostConstruct
     protected void init() {
@@ -43,11 +58,16 @@ public class JwtTokenProvider {
         }
     }
 
-//    public Authentification getAuthentication(String token) {
-//
-//    }
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = userDetailsServiceIml.loadUserByUsername(getUserName(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
 
     public String getUserName(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        return request.getHeader(authorisationHeader);
     }
 }

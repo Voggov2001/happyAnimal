@@ -43,7 +43,7 @@ public class User {
     private String password;
 
     @Column(name = "is_locked")
-    private boolean isLocked;
+    private boolean isActive;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Report> reports;

@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.User;
 import com.coderiders.happyanimal.model.dto.UserRqDto;
 import com.coderiders.happyanimal.model.dto.UserRsDto;
 import com.coderiders.happyanimal.repository.UserRepository;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,5 +38,14 @@ public class UserMapper {
     public UserRsDto mapToResponseDto(User user) {
         var modelMapper = new ModelMapper();
         return modelMapper.map(user, UserRsDto.class);
+    }
+
+    public MyUserDetails mapToMyUserDetails(User user) {
+        return MyUserDetails.builder()
+                .username(user.getLogin())
+                .password(user.getPassword())
+                .authorities(user.getUserRole().getAuthorities())
+                .isActive(user.isActive())
+                .build();
     }
 }
