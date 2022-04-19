@@ -4,6 +4,7 @@ import com.coderiders.happyanimal.model.Animal;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InspectionRqDto {
     @NotNull
-    private LocalDateTime date;
+    private LocalDate date;
     @NotNull
-    private List<Animal> animalList;
+    private List<Long> animalIdList;
 }

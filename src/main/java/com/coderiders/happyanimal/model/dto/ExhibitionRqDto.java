@@ -4,6 +4,7 @@ import com.coderiders.happyanimal.model.Animal;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -13,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ExhibitionRqDto {
     @NotNull
-    private String date;
+    private LocalDate date;
     @NotNull
-    private List<Animal> animals;
+    private List<Long> animalIds;
 }
