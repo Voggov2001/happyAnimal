@@ -48,8 +48,8 @@ public class InspectionService {
 
     @Transactional
     public InspectionRsDto getById(Long id) {
-        Inspection inspection = this.inspectionRepository.getById(id);
-        return this.inspectionMapper.mapToRsDto(inspection);
+        Inspection inspection = inspectionRepository.findById(id).orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_INSPECTION));
+        return inspectionMapper.mapToRsDto(inspection);
     }
 
     @Transactional
@@ -76,7 +76,7 @@ public class InspectionService {
                 animalList.add(animal);
                 inspection.setAnimalList(animalList);
                 inspectionRepository.save(inspection);
-                animal.setStatus(AnimalStatus.BOOKED);
+                animal.setStatus(AnimalStatus.BOOKED_INSPECTION);
                 animalRepository.save(animal);
             }
         } else {
@@ -86,7 +86,7 @@ public class InspectionService {
                     .animalList(List.of(animal))
                     .build()
             );
-            animal.setStatus(AnimalStatus.BOOKED);
+            animal.setStatus(AnimalStatus.BOOKED_INSPECTION);
             animalRepository.save(animal);
 
         }
@@ -125,17 +125,5 @@ public class InspectionService {
                 .stream()
                 .map(animalMapper::mapToDto)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public InspectionRsDto deleteAnimal(String date, Long animalId) {
-        LocalDate localDate = Optional.ofNullable(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
-                .orElseThrow(() -> new BadRequestException("Дата некорректна"));
-        Inspection inspection = inspectionRepository.findByDate(localDate)
-                .orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_INSPECTION));
-        List<Animal> animalList = inspection.getAnimalList();
-        animalList.remove(animalRepository.findById(animalId).orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_ANIMAL)));
-        inspection.setAnimalList(animalList);
-        return inspectionMapper.mapToRsDto(inspectionRepository.save(inspection));
     }
 }

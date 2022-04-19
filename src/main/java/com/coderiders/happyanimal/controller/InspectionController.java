@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,16 +27,13 @@ public class InspectionController {
         this.inspectionService = service;
     }
 
+    @Operation(summary = "Добавить животное на осмотр")
     @PutMapping(path = "/{animalId}")
     public InspectionRsDto addAnimal(String localDate, @PathVariable Long animalId) {
         return inspectionService.addAnimalToInspection(localDate, animalId);
     }
 
-    @PutMapping(path = "/-/{animalId}")
-    public InspectionRsDto deleteAnimal(String localDate, @PathVariable Long animalId){
-        return inspectionService.deleteAnimal(localDate, animalId);
-    }
-
+    @Operation(summary = "Обновить осмотр(Имхо бесполезная вещь)")
     @PutMapping
     public InspectionRsDto updateInspection(InspectionRqDto inspectionRqDto) {
         return inspectionService.update(inspectionRqDto);
@@ -55,15 +51,15 @@ public class InspectionController {
         return this.inspectionService.getById(id);
     }
 
+    @Operation(summary = "Осмотр по дате")
     @GetMapping(path = "/date/{date}")
     public InspectionRsDto getByDate(@PathVariable String date) {
         return inspectionService.getByDate(date);
     }
 
+    @Operation(summary = "Животные одного осмотра")
     @GetMapping(path = "/{id}/animals")
     public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
         return inspectionService.getAnimals(id);
     }
-
-
 }

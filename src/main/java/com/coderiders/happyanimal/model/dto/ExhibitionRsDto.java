@@ -19,5 +19,5 @@ public class ExhibitionRsDto {
     @NotNull
     private String date;
     @NotNull
-    private List<Animal> animals;
+    private List<AnimalRsDto> animals;
 }
