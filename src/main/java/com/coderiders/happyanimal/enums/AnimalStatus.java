@@ -15,7 +15,8 @@ public enum AnimalStatus {
     SICK("Заболел", false),
     DEAD("Умер", false),
     INSPECTED("На осмотре", false),
-    BOOKED("Записан на осмотр", false),
+    BOOKED_INSPECTION("Записан на осмотр", false),
+    BOOKED_EXHIBITION("Записан на выставку", false),
     HIBERNATION("В спячке", false),
     SOLD("Продан", false),
     NEWBORN("Новорожденный", false),
@@ -43,6 +44,7 @@ public enum AnimalStatus {
                 .filter(v -> v.permissionToParticipate)
                 .collect(Collectors.toList());
     }
+
     public static List<String> getAllStatusNames(){
         return Arrays.stream(values())
                 .map(v-> v.name)
