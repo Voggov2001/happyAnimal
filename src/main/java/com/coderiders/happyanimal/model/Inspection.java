@@ -31,7 +31,6 @@ public class Inspection {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "animal_id")
+    @ManyToMany
     private List<Animal> animalList;
 }
