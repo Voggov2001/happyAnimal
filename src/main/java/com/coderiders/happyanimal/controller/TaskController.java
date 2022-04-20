@@ -28,6 +28,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    //АДМИН
     @Operation(summary = "Добавление задачи",
             description = "Внимание, тип повторения должен быть одним из существующих")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,6 +41,7 @@ public class TaskController {
         return ResponseEntity.created(url).body(created);
     }
 
+    //АДМИН, ЮЗЕР
     @Operation(summary = "Все задачи",
             description = "Если одно из полей представлено, то искать будет только по нему")
     @GetMapping
@@ -48,17 +50,21 @@ public class TaskController {
         return taskService.getAll(pageable, userId, animalId);
     }
 
+    //АДМИН, ЮЗЕР
+    @Operation(summary = "Задача по её ID")
     @GetMapping(path = "/{taskId}")
     public TaskRsDto getTaskById(@PathVariable Long taskId) {
         return taskService.getById(taskId);
     }
 
+    //АДМИН, юзеру без надобности
     @Operation(summary = "Все типы повторения")
     @GetMapping(path = "/repeat-types")
     public List<String> getAllRepeatTypes() {
         return RepeatType.getValues();
     }
 
+    //АДМИН, ЮЗЕР (может менять статус на "сделано")
     @PutMapping(path = "/{id}")
     public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto) {
         var updated = taskService.updateTask(id, taskRqDto);

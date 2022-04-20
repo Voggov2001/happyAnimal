@@ -27,36 +27,42 @@ public class InspectionController {
         this.inspectionService = service;
     }
 
+    //ВСЕ
     @Operation(summary = "Добавить животное на осмотр")
     @PutMapping(path = "/{animalId}")
     public InspectionRsDto addAnimal(String localDate, @PathVariable Long animalId) {
         return inspectionService.addAnimalToInspection(localDate, animalId);
     }
 
+    //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Обновить осмотр(Имхо бесполезная вещь)")
     @PutMapping
     public InspectionRsDto updateInspection(InspectionRqDto inspectionRqDto) {
         return inspectionService.update(inspectionRqDto);
     }
 
+    //ВЕТЕРИНАР, АДМИН
     @Operation(summary = "Все запланированные осмотры")
     @GetMapping(produces = {"application/json"})
     public Page<InspectionRsDto> getAll(Pageable pageable) {
         return inspectionService.getAll(pageable);
     }
 
+    //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Осмотр по id")
     @GetMapping(path = {"/{id}"})
     public InspectionRsDto getById(@PathVariable Long id) {
         return this.inspectionService.getById(id);
     }
 
+    //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Осмотр по дате")
     @GetMapping(path = "/date/{date}")
     public InspectionRsDto getByDate(@PathVariable String date) {
         return inspectionService.getByDate(date);
     }
 
+    //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Животные одного осмотра")
     @GetMapping(path = "/{id}/animals")
     public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
