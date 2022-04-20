@@ -26,6 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    //АДМИН, СУПЕРЮЗЕР или кто там хз
     @Operation(summary = "Добавление нового")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRsDto> addUser(@Valid @RequestBody UserRqDto userForm) {
@@ -37,12 +38,14 @@ public class UserController {
         return ResponseEntity.created(url).body(created);
     }
 
+    //АДМИН
     @Operation(summary = "Все пользователи")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<UserRsDto> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);
     }
 
+    //АДМИН
     @Operation(summary = "Пользователь по его id")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserRsDto getById(@PathVariable Long id) {

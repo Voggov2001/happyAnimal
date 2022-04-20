@@ -30,6 +30,7 @@ public class WeatherController {
         this.weatherMapper = weatherMapper;
     }
 
+    //ВСЕ
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public WeatherDto getWeatherDto(@RequestParam int countOfDays) {
         ResponseEntity<WeatherFromJson> weatherForecast = weatherService.getWeatherForecast(countOfDays);
