@@ -47,6 +47,13 @@ public class AnimalController {
     public Page<AnimalRsDto> getAllAnimals(Pageable pageable, Long userId) {
         return animalService.getAll(pageable, userId);
     }
+
+    @Operation(summary = "Животные, разрешенные для выставки")
+    @GetMapping(path = "/permitted")
+    public List<AnimalRsDto> getPermittedAnimals(){
+        return animalService.getPermittedAnimals();
+    }
+
     @Operation(summary = "Статусы/состояния животных")
     @GetMapping(path = "/states",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllAnimalStates() {

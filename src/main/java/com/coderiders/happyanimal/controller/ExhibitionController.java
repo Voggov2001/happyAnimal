@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -24,6 +26,17 @@ public class ExhibitionController {
     @Autowired
     public ExhibitionController(ExhibitionService exhibitionService) {
         this.exhibitionService = exhibitionService;
+    }
+
+    @Operation(summary = "Создание выставки")
+    @PostMapping
+    public ResponseEntity<ExhibitionRsDto> createExhibition(ExhibitionRqDto exhibitionRqDto){
+        var created = exhibitionService.saveExhibition(exhibitionRqDto);
+        var url = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(url).body(created);
     }
 
     @Operation(summary = "Добавить животное на выставку")

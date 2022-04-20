@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.mapper;
 
+import com.coderiders.happyanimal.exceptions.BadRequestException;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.Exhibition;
 import com.coderiders.happyanimal.model.dto.ExhibitionRqDto;
@@ -7,7 +8,9 @@ import com.coderiders.happyanimal.model.dto.ExhibitionRsDto;
 import com.coderiders.happyanimal.repository.AnimalRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,7 +25,7 @@ public class ExhibitionMapper {
 
     public Exhibition mapToExhibition(ExhibitionRqDto dto) {
         return Exhibition.builder()
-                .date(dto.getDate())
+                .date(Optional.ofNullable(LocalDate.parse(dto.getDate(), DateTimeFormatter.ISO_DATE)).orElseThrow(()-> new BadRequestException("Дата некорректна")))
                 .animals(dto.getAnimalIds()
                         .stream()
                         .map(aLong -> animalRepository
