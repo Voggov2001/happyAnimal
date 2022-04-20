@@ -14,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalService {
@@ -52,7 +54,7 @@ public class AnimalService {
 
     @Transactional
     public Page<AnimalRsDto> getAll(Pageable pageable, Long userId) {
-        if (Optional.ofNullable(userId).isPresent()){
+        if (Optional.ofNullable(userId).isPresent()) {
             return getAllByUserId(pageable, userId);
         }
         Page<Animal> allAnimals = animalRepository.findAll(pageable);
@@ -66,9 +68,19 @@ public class AnimalService {
         return animalMapper.mapToDto(animal);
     }
 
+    @Transactional
     public AnimalRsDto editAnimal(Long animalId, AnimalRqDto animalRqDto) {
         Animal animal = animalMapper.mapToAnimal(animalRqDto);
         animal.setId(animalId);
         return animalMapper.mapToDto(animalRepository.save(animal));
+    }
+
+    @Transactional
+    public List<AnimalRsDto> getPermittedAnimals() {
+        return animalRepository.findAll()
+                .stream()
+                .filter(animal -> animal.getStatus().isPermissionToParticipate())
+                .map(animalMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 }
