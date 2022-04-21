@@ -32,6 +32,7 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
+    //АДМИН
     @Operation(summary = "Добавление животного")
     @PostMapping
     public ResponseEntity<AnimalRsDto> addAnimal(@Valid @RequestBody AnimalRqDto animalRqDto) {
@@ -43,24 +44,36 @@ public class AnimalController {
         return ResponseEntity.created(url).body(created);
     }
 
+    //ЮЗЕРУ ПО ID, АДМИНУ МОЖНО И ТАК И ТАК ПРИ ЖЕЛАНИИ СДЕЛАТЬ, ВЕТЕРИНАРУ МОЖНО ОСТАВИТЬ
     @Operation(summary = "Выдача всех животных",
             description = "Если представлен id пользователся, то возвращает только животных конкретного поьзователя")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<AnimalRsDto> getAllAnimals(Pageable pageable, Long userId) {
         return animalService.getAll(pageable, userId);
     }
+
+    //АДМИН
+    @Operation(summary = "Животные, разрешенные для выставки")
+    @GetMapping(path = "/permitted")
+    public List<AnimalRsDto> getPermittedAnimals(){
+        return animalService.getPermittedAnimals();
+    }
+
+    //ВСЕ
     @Operation(summary = "Статусы/состояния животных")
     @GetMapping(path = "/states",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllAnimalStates() {
         return AnimalStatus.getAllStatusNames();
     }
 
+    //ВСЕ
     @Operation(summary = "Изменить животное")
     @PutMapping(path = "/{animalId}")
     public AnimalRsDto editAnimal(@PathVariable Long animalId, @RequestBody AnimalRqDto animalRqDto) {
         return animalService.editAnimal(animalId, animalRqDto);
     }
 
+    //ВСЕ
     @Operation(summary = "Одно животное по id")
     @GetMapping(path = "/{animalId}")
     public AnimalRsDto getById(@PathVariable Long animalId) {

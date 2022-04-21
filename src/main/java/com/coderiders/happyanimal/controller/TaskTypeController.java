@@ -19,13 +19,14 @@ import java.util.List;
 @Tag(name = "task-type-controller", description = "контроллер для типа задачи")
 public class TaskTypeController {
 
-    TaskTypeService taskTypeService;
+    private final TaskTypeService taskTypeService;
 
     @Autowired
     public TaskTypeController(TaskTypeService taskTypeService) {
         this.taskTypeService = taskTypeService;
     }
 
+    //АДМИН
     @Operation(summary = "Добавление типа задачи")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addTaskType(@Validated @RequestParam String type) {
@@ -37,6 +38,7 @@ public class TaskTypeController {
         return ResponseEntity.created(url).body(created);
     }
 
+    //АДМИН
     @Operation(summary = "Все типы задач")
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllTypes(){

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ExhibitionRqDto {
     @NotNull
-    private LocalDate date;
+    private String date;
     @NotNull
     private List<Long> animalIds;
 }

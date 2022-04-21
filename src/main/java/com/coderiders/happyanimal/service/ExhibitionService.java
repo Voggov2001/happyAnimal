@@ -45,8 +45,9 @@ public class ExhibitionService {
 
     @Transactional
     public ExhibitionRsDto update(ExhibitionRqDto exhibitionRqDto) {
-        if (exhibitionRepository.findByDate(exhibitionRqDto.getDate()).isPresent()) {
-            Exhibition exhibition = exhibitionRepository.findByDate(exhibitionRqDto.getDate()).get();
+        LocalDate date = Optional.ofNullable(LocalDate.parse(exhibitionRqDto.getDate(), DateTimeFormatter.ISO_DATE)).orElseThrow(()-> new BadRequestException("Дата некорректна"));
+        if (exhibitionRepository.findByDate(date).isPresent()) {
+            Exhibition exhibition = exhibitionRepository.findByDate(date).get();
             exhibition.setAnimals(exhibitionRqDto.getAnimalIds()
                     .stream()
                     .map(aLong -> animalRepository.findById(aLong)
@@ -117,5 +118,17 @@ public class ExhibitionService {
                 .map(animalMapper::mapToDto)
                 .collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public ExhibitionRsDto saveExhibition(ExhibitionRqDto exhibitionRqDto) {
+        LocalDate date = Optional.ofNullable(LocalDate.parse(exhibitionRqDto.getDate(), DateTimeFormatter.ISO_DATE))
+                .orElseThrow(()-> new BadRequestException("Дата Некорректна"));
+        if (exhibitionRepository.findByDate(date).isEmpty()) {
+            Exhibition exhibition = exhibitionMapper.mapToExhibition(exhibitionRqDto);
+            exhibitionRepository.save(exhibition);
+            return exhibitionMapper.mapToRsDto(exhibition);
+        }
+        throw new BadRequestException("Выставка на текущую дату уже существует");
     }
 }

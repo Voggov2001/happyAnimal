@@ -26,6 +26,7 @@ public class TaskLogController {
         this.taskLogService = taskLogService;
     }
 
+    //АДМИН
     @Operation(summary = "Все логи задач",
             description = "Если указана только одна из дат, то вернет на указанную дату\n" +
                     "Если указаны обе даты, то вернет в промежутке между ними\n" +

@@ -24,33 +24,31 @@ public class AnimalKindController {
         this.animalKindService = service;
     }
 
+    //НИКТО
     @Operation(summary = "Загружает заготовки видов в бд")
     @PostMapping
     public void createAll() throws IOException {
         animalKindService.createAll();
     }
 
+    //АДМИН
     @Operation(summary = "Все виды (Объекты) из базы")
     @GetMapping
     public List<AnimalKindDto> getAllKinds() {
         return animalKindService.getAll();
     }
 
+    //АДМИН
     @Operation(summary = "Все строки с названиями видов")
     @GetMapping(path = "only-kinds")
     public List<String> getAllKindNames() {
         return animalKindService.getAllOnlyKinds();
     }
 
+    //АДМИН, но он и не нужен никому по сути
     @Operation(summary = "Возвращает объект по названию вида")
     @GetMapping(path = "/{kindName}")
     public AnimalKindDto getOneByKindName(@PathVariable String kindName) {
         return animalKindService.getByKindName(kindName);
-    }
-
-    @Operation(summary = "Сбрасывает таблицу видов")
-    @DeleteMapping
-    public void deleteAll() {
-        animalKindService.deleteAll();
     }
 }
