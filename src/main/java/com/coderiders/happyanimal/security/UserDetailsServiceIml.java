@@ -5,7 +5,6 @@ import com.coderiders.happyanimal.mapper.UserMapper;
 import com.coderiders.happyanimal.model.User;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,9 @@ public class UserDetailsServiceIml implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+    public MyUserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new NotFoundException(NOT_FOUND_EXCEPTION));
-        return null;
+        return userMapper.mapToMyUserDetails(user);
     }
 }

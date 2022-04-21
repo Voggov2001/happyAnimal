@@ -3,8 +3,6 @@ package com.coderiders.happyanimal.config;
 import com.coderiders.happyanimal.enums.UserRole;
 import com.coderiders.happyanimal.security.JwtConfigurer;
 import com.coderiders.happyanimal.security.MyUserDetails;
-import com.coderiders.happyanimal.security.UserDetailsServiceIml;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,24 +11,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import java.util.Set;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsServiceIml userDetailsServiceIml;
     private final JwtConfigurer jwtConfigurer;
 
-    @Autowired
-    public SecurityConfig(UserDetailsServiceIml userDetailsServiceIml, JwtConfigurer jwtConfigurer) {
-        this.userDetailsServiceIml = userDetailsServiceIml;
+    public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
     }
 
@@ -41,23 +33,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
+                //.antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .apply(jwtConfigurer);
-    }
-
-    @Bean
-    @Override
-    protected UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(
-                createUserDetails("superAdmin", UserRole.SUPER_ADMIN.getAuthorities()),
-                createUserDetails("employee", UserRole.EMPLOYEE.getAuthorities()),
-                createUserDetails("admin", UserRole.ADMIN.getAuthorities()),
-                createUserDetails("veterinarian", UserRole.VETERINARIAN.getAuthorities())
-        );
     }
 
     @Bean
@@ -67,16 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    private MyUserDetails createUserDetails(String username, Set<SimpleGrantedAuthority> authorities) {
-        return MyUserDetails.builder()
-                .username(username)
-                .password(passwordEncoder().encode(username))
-                .authorities(authorities)
-                .isActive(true)
-                .build();
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

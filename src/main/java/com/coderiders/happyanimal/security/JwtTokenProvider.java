@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -19,12 +19,7 @@ public class JwtTokenProvider {
 
     private final UserDetailsServiceIml userDetailsServiceIml;
 
-    @Value("${security.jwt.secret}")
-    private String secretKey;
-    @Value("${security.jwt.header}")
-    private String authorisationHeader;
-    @Value("${security.jwt.expiration}")
-    private long validityInMilliseconds;
+    private String secretKey = "proselyte";
 
     @Autowired
     public JwtTokenProvider(UserDetailsServiceIml userDetailsServiceIml) {
@@ -40,6 +35,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userName);
         claims.put("role", role);
         Date now = new Date();
+        long validityInMilliseconds = 604800;
         Date validity = new Date(now.getTime() + validityInMilliseconds * 1000);
         return Jwts.builder()
                 .setClaims(claims)
@@ -49,7 +45,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
@@ -58,16 +54,17 @@ public class JwtTokenProvider {
         }
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsServiceIml.loadUserByUsername(getUserName(token));
+    Authentication getAuthentication(String token) {
+        MyUserDetails userDetails = userDetailsServiceIml.loadUserByUsername(getUserName(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUserName(String token) {
+    private String getUserName(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    String resolveToken(HttpServletRequest request) {
+        String authorisationHeader = "Authorisation";
         return request.getHeader(authorisationHeader);
     }
 }

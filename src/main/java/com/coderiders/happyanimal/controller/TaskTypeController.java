@@ -2,6 +2,7 @@ package com.coderiders.happyanimal.controller;
 
 import com.coderiders.happyanimal.service.TaskTypeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasktype")
+@SecurityRequirement(name = "swagger_config")
 @Tag(name = "task-type-controller", description = "контроллер для типа задачи")
 public class TaskTypeController {
 

@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.dto.TaskRqDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
 import com.coderiders.happyanimal.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
+@SecurityRequirement(name = "swagger_config")
 @Tag(name = "task-controller", description = "задачи, связанные с животными")
 public class TaskController {
     private final TaskService taskService;

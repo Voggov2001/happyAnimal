@@ -4,6 +4,7 @@ import com.coderiders.happyanimal.model.dto.UserRqDto;
 import com.coderiders.happyanimal.model.dto.UserRsDto;
 import com.coderiders.happyanimal.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "swagger_config")
 @Tag(name = "user-controller", description = "Пользователи")
 public class UserController {
     private final UserService userService;
@@ -29,7 +31,6 @@ public class UserController {
 
     @Operation(summary = "Добавление нового")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<UserRsDto> addUser(@Valid @RequestBody UserRqDto userForm) {
         var created = userService.saveUser(userForm);
         var url = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -41,14 +42,12 @@ public class UserController {
 
     @Operation(summary = "Все пользователи")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('admin')")
     public Page<UserRsDto> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);
     }
 
     @Operation(summary = "Пользователь по его id")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('admin')")
     public UserRsDto getById(@PathVariable Long id) {
         return userService.getById(id);
     }

@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/animals")
+@SecurityRequirement(name = "swagger_config")
 @Tag(name = "animal-controller", description = "Контроллер животных\n Поля вида и статуса должны быть уже существующими")
 public class AnimalController {
     private final AnimalService animalService;

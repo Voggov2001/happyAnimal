@@ -10,6 +10,7 @@ import com.coderiders.happyanimal.model.dto.InspectionRqDto;
 import com.coderiders.happyanimal.model.dto.InspectionRsDto;
 import com.coderiders.happyanimal.service.InspectionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/inspection"})
+@SecurityRequirement(name = "swagger_config")
 public class InspectionController {
     private final InspectionService inspectionService;
 
