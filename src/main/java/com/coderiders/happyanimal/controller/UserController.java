@@ -31,6 +31,7 @@ public class UserController {
 
     //АДМИН, СУПЕРЮЗЕР или кто там хз
     @Operation(summary = "Добавление нового")
+    //@PreAuthorize("hasAuthority('admin')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserRsDto> addUser(@Valid @RequestBody UserRqDto userForm) {
         var created = userService.saveUser(userForm);
@@ -43,6 +44,7 @@ public class UserController {
 
     //АДМИН
     @Operation(summary = "Все пользователи")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<UserRsDto> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);
@@ -50,6 +52,7 @@ public class UserController {
 
     //АДМИН
     @Operation(summary = "Пользователь по его id")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserRsDto getById(@PathVariable Long id) {
         return userService.getById(id);

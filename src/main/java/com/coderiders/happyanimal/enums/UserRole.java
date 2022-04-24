@@ -10,7 +10,7 @@ public enum UserRole {
     ADMIN(Set.of(Permission.ADMIN)),
     EMPLOYEE(Set.of(Permission.EMPLOYEE)),
     VETERINARIAN(Set.of(Permission.VETERINARIAN)),
-    SUPER_ADMIN(Set.of(Permission.ADMIN, Permission.EMPLOYEE, Permission.VETERINARIAN));
+    SUPER_ADMIN(Set.of(Permission.ADMIN, Permission.EMPLOYEE, Permission.VETERINARIAN, Permission.SUPER_ADMIN));
 
     private final Set<Permission> permissions;
 

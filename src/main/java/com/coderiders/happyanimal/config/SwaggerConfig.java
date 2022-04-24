@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 )
 @SecurityScheme(
         name = "swagger_config",
-        scheme = "basic",
+        scheme = "bearer",
         type = SecuritySchemeType.HTTP,
         in = SecuritySchemeIn.HEADER)
 public class SwaggerConfig implements WebMvcConfigurer { }

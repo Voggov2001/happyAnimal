@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,6 +33,7 @@ public class ExhibitionController {
 
     //АДМИН
     @Operation(summary = "Создание выставки")
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping
     public ResponseEntity<ExhibitionRsDto> createExhibition(ExhibitionRqDto exhibitionRqDto){
         var created = exhibitionService.saveExhibition(exhibitionRqDto);
@@ -44,6 +46,7 @@ public class ExhibitionController {
 
     //АДМИН
     @Operation(summary = "Добавить животное на выставку")
+    @PreAuthorize("hasAuthority('admin')")
     @PutMapping(path = "/{animalId}")
     public ExhibitionRsDto addAnimal(@RequestParam String localDate, @PathVariable Long animalId) {
         return exhibitionService.addAnimalToExhibition(localDate, animalId);
@@ -51,6 +54,7 @@ public class ExhibitionController {
 
     //АДМИН
     @Operation(summary = "Обновление выставки(Имхо не понадобится)")
+    @PreAuthorize("hasAuthority('admin')")
     @PutMapping
     public ExhibitionRsDto updateInspection(ExhibitionRqDto inspectionRqDto) {
         return exhibitionService.update(inspectionRqDto);

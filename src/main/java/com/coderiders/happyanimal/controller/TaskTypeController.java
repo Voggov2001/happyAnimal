@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +29,7 @@ public class TaskTypeController {
 
     //АДМИН
     @Operation(summary = "Добавление типа задачи")
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addTaskType(@Validated @RequestParam String type) {
         String created = taskTypeService.createTaskType(type);
@@ -40,6 +42,7 @@ public class TaskTypeController {
 
     //АДМИН
     @Operation(summary = "Все типы задач")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllTypes(){
         return taskTypeService.getAllTypes();

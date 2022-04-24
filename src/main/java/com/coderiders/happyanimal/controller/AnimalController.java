@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,6 +35,7 @@ public class AnimalController {
 
     //АДМИН
     @Operation(summary = "Добавление животного")
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping
     public ResponseEntity<AnimalRsDto> addAnimal(@Valid @RequestBody AnimalRqDto animalRqDto) {
         var created = animalService.saveAnimal(animalRqDto);
@@ -54,6 +56,7 @@ public class AnimalController {
 
     //АДМИН
     @Operation(summary = "Животные, разрешенные для выставки")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/permitted")
     public List<AnimalRsDto> getPermittedAnimals(){
         return animalService.getPermittedAnimals();

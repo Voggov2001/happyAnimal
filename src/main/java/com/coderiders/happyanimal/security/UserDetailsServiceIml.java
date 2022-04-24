@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceIml implements UserDetailsService {
@@ -23,6 +24,7 @@ public class UserDetailsServiceIml implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public MyUserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login).orElseThrow(
                 () -> new NotFoundException(NOT_FOUND_EXCEPTION));

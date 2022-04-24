@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class InspectionController {
 
     //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Обновить осмотр(Имхо бесполезная вещь)")
+    @PreAuthorize("hasAnyRole('admin', 'veterinarian')")
     @PutMapping
     public InspectionRsDto updateInspection(InspectionRqDto inspectionRqDto) {
         return inspectionService.update(inspectionRqDto);
@@ -45,6 +47,7 @@ public class InspectionController {
 
     //ВЕТЕРИНАР, АДМИН
     @Operation(summary = "Все запланированные осмотры")
+    @PreAuthorize("hasAnyRole('admin', 'veterinarian')")
     @GetMapping(produces = {"application/json"})
     public Page<InspectionRsDto> getAll(Pageable pageable) {
         return inspectionService.getAll(pageable);
@@ -52,6 +55,7 @@ public class InspectionController {
 
     //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Осмотр по id")
+    @PreAuthorize("hasAnyRole('admin', 'veterinarian')")
     @GetMapping(path = {"/{id}"})
     public InspectionRsDto getById(@PathVariable Long id) {
         return this.inspectionService.getById(id);
@@ -59,6 +63,7 @@ public class InspectionController {
 
     //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Осмотр по дате")
+    @PreAuthorize("hasAnyRole('admin', 'veterinarian')")
     @GetMapping(path = "/date/{date}")
     public InspectionRsDto getByDate(@PathVariable String date) {
         return inspectionService.getByDate(date);
@@ -66,6 +71,7 @@ public class InspectionController {
 
     //АДМИН, ВЕТЕРИНАР
     @Operation(summary = "Животные одного осмотра")
+    @PreAuthorize("hasAnyRole('admin', 'veterinarian')")
     @GetMapping(path = "/{id}/animals")
     public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
         return inspectionService.getAnimals(id);
