@@ -57,7 +57,7 @@ public class TaskController {
 
     //АДМИН, ЮЗЕР
     @Operation(summary = "Задача по её ID")
-    @PreAuthorize("hasAnyRole('admin', 'employee')")
+    @PreAuthorize("hasAuthority('admin') || hasAuthority('employee')")
     @GetMapping(path = "/{taskId}")
     public TaskRsDto getTaskById(@PathVariable Long taskId) {
         return taskService.getById(taskId);
@@ -72,7 +72,7 @@ public class TaskController {
     }
 
     //АДМИН, ЮЗЕР (может менять статус на "сделано")
-    @PreAuthorize("hasAnyRole('admin', 'employee')")
+    @PreAuthorize("hasAuthority('admin') || hasAuthority('employee')")
     @PutMapping(path = "/{id}")
     public ResponseEntity<TaskRsDto> updateTask(@PathVariable Long id, @RequestBody TaskRqDto taskRqDto) {
         var updated = taskService.updateTask(id, taskRqDto);
