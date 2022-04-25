@@ -1,8 +1,6 @@
 package com.coderiders.happyanimal.controller.handler;
 
-import com.coderiders.happyanimal.exceptions.BadRequestException;
-import com.coderiders.happyanimal.exceptions.InternalServerException;
-import com.coderiders.happyanimal.exceptions.NotFoundException;
+import com.coderiders.happyanimal.exceptions.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,16 +30,30 @@ public class AdviceController {
     }
 
     @ExceptionHandler(value = {BadRequestException.class})
-    public ResponseEntity handleValidationExceptions(RuntimeException ex) {
+    public ResponseEntity handleValidationExceptions(BadRequestException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorDto(ex.getLocalizedMessage()));
     }
 
     @ExceptionHandler(value = {InternalServerException.class})
-    public ResponseEntity handleInternalServerException(RuntimeException ex) {
+    public ResponseEntity handleInternalServerException(InternalServerException ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorDto(ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(value = {ForbiddenException.class})
+    public ResponseEntity handleForbiddenException(ForbiddenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(new ErrorDto(ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(value = {UnAuthorizedException.class})
+    public ResponseEntity handleUnAuthorizedException(UnAuthorizedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorDto(ex.getLocalizedMessage()));
     }
 

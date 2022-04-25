@@ -14,7 +14,12 @@ spring:
   jackson:
     default-property-inclusion: non_null
     serialization:
-        write-dates-as-timestamps: true
+      write-dates-as-timestamps: true
 server:
   servlet:
     context-path: /api
+security:
+  jwt:
+    header: Authorisation
+    secret: proselyte
+    expiration: 604800

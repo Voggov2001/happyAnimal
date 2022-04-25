@@ -5,6 +5,7 @@ import com.coderiders.happyanimal.model.dto.WeatherDto;
 import com.coderiders.happyanimal.model.dto.WeatherFromJson;
 import com.coderiders.happyanimal.service.WeatherService;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Hidden
 @RestController
 @RequestMapping("/weather")
+@SecurityRequirement(name = "swagger_config")
 @Tag(name = "weather-controller", description = "погода на следующие три дня")
 public class WeatherController {
     private final WeatherService weatherService;

@@ -20,6 +20,8 @@ public class UserRqDto {
     @NotNull
     private int age;
     @NotNull
+    private UserRole userRole;
+    @NotNull
     private String login;
     @NotNull
     private String password;

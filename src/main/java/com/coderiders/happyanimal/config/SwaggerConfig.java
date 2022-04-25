@@ -1,27 +1,22 @@
 package com.coderiders.happyanimal.config;
 
-import org.springframework.context.annotation.Bean;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@EnableSwagger2
-public class SwaggerConfig implements WebMvcConfigurer {
-    public static final String PATH = "/api";
-
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build();
-    }
-
-}
+@OpenAPIDefinition(
+        info = @Info(title = "Happy animals API",
+                version = "1.0",
+                description = "Happy animals")
+)
+@SecurityScheme(
+        name = "swagger_config",
+        scheme = "bearer",
+        type = SecuritySchemeType.HTTP,
+        in = SecuritySchemeIn.HEADER)
+public class SwaggerConfig implements WebMvcConfigurer { }
