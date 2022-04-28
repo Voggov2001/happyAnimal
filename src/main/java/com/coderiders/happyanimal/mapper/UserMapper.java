@@ -3,6 +3,7 @@ package com.coderiders.happyanimal.mapper;
 import com.coderiders.happyanimal.exceptions.BadRequestException;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.User;
+import com.coderiders.happyanimal.model.dto.AuthenticationRsDto;
 import com.coderiders.happyanimal.model.dto.UserRqDto;
 import com.coderiders.happyanimal.model.dto.UserRsDto;
 import com.coderiders.happyanimal.repository.UserRepository;
@@ -44,12 +45,19 @@ public class UserMapper {
     }
 
     public MyUserDetails mapToMyUserDetails(User user) {
-        MyUserDetails build = MyUserDetails.builder()
+        return MyUserDetails.builder()
                 .username(user.getLogin())
                 .password(user.getPassword())
                 .authorities(user.getUserRole().getAuthorities())
                 .isActive(user.isActive())
                 .build();
-        return build;
+    }
+
+    public AuthenticationRsDto mapToAuthenticationRsDto(User user, String token) {
+        return AuthenticationRsDto.builder()
+                .id(user.getId())
+                .userRole(user.getUserRole())
+                .token(token)
+                .build();
     }
 }
