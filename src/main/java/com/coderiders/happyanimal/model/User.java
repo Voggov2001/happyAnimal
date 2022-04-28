@@ -36,7 +36,7 @@ public class User {
     @Column(name = "age")
     private int age;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
     private String login;
 
     @Column(name = "password")

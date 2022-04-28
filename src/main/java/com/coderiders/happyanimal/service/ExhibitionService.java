@@ -87,8 +87,6 @@ public class ExhibitionService {
                 animalList.add(animal);
                 exhibition.setAnimals(animalList);
                 exhibitionRepository.save(exhibition);
-                animal.setStatus(AnimalStatus.BOOKED_EXHIBITION);
-                animalRepository.save(animal);
             }
         } else {
             Animal animal = animalRepository.findById(animalId).orElseThrow(() -> new NotFoundException(ERROR_NOT_FOUND_ANIMAL));
@@ -97,8 +95,6 @@ public class ExhibitionService {
                     .animals(List.of(animal))
                     .build()
             );
-            animal.setStatus(AnimalStatus.BOOKED_EXHIBITION);
-            animalRepository.save(animal);
         }
         return exhibitionMapper.mapToRsDto(exhibition);
     }
