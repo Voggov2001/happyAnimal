@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.mapper;
 
+import com.coderiders.happyanimal.exceptions.BadRequestException;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.model.User;
 import com.coderiders.happyanimal.model.dto.AuthenticationRsDto;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Component
 public class UserMapper {
     private final UserRepository repository;
@@ -26,13 +29,10 @@ public class UserMapper {
         this.passwordEncoder = new BCryptPasswordEncoder(12);
     }
 
-    @Transactional
-    public User mapToUser(UserRsDto dto) {
-        return repository.findById(dto.getId()).orElseThrow(
-                () -> new NotFoundException(ERROR_MESSAGE_BAD_REQUEST));
-    }
-
     public User mapToUser(UserRqDto dto) {
+        if (repository.findByLogin(dto.getLogin()).isPresent()){
+            throw new BadRequestException("Пользователь с таким логином уже существует");
+        }
         var modelMapper = new ModelMapper();
         User user = modelMapper.map(dto, User.class);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
