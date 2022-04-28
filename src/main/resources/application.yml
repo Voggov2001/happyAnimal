@@ -18,8 +18,3 @@ spring:
 server:
   servlet:
     context-path: /api
-security:
-  jwt:
-    header: Authorisation
-    secret: proselyte
-    expiration: 604800
