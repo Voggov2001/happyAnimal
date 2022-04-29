@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -50,7 +51,7 @@ public class AnimalController {
     @Operation(summary = "Выдача всех животных",
             description = "Если представлен id пользователся, то возвращает только животных конкретного поьзователя")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<AnimalRsDto> getAllAnimals(Pageable pageable, Long userId) {
+    public Page<AnimalRsDto> getAllAnimals(Pageable pageable, @RequestParam(required = false) Long userId) {
         return animalService.getAll(pageable, userId);
     }
 

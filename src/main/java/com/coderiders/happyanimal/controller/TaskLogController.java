@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -35,8 +36,8 @@ public class TaskLogController {
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping
     public Page<TaskLogRsDto> getAll(Pageable pageable,
-                                     String startDateTime,
-                                     String endDateTime) {
-        return taskLogService.getAll(pageable, startDateTime, endDateTime);
+                                     @RequestParam(required = false) String startDate,
+                                     @RequestParam(required = false) String endDate) {
+        return taskLogService.getAll(pageable, startDate, endDate);
     }
 }
