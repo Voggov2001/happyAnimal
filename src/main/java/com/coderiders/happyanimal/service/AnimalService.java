@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.enums.UserRole;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.AnimalMapper;
 import com.coderiders.happyanimal.model.Animal;
@@ -8,6 +9,7 @@ import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.repository.AnimalRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,12 +55,26 @@ public class AnimalService {
     }
 
     @Transactional
-    public Page<AnimalRsDto> getAll(Pageable pageable, Long userId) {
-        if (Optional.ofNullable(userId).isPresent()) {
-            return getAllByUserId(pageable, userId);
+    public Page<AnimalRsDto> getAllByUserLogin(Pageable pageable, String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(
+                () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL));
+        Page<Animal> allByUser = animalRepository.findAllByUser(user, pageable);
+        if (allByUser.isEmpty()) {
+            throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL);
         }
-        Page<Animal> allAnimals = animalRepository.findAll(pageable);
-        return allAnimals.map(animalMapper::mapToDto);
+        return allByUser.map(animalMapper::mapToDto);
+    }
+
+    @Transactional
+    public Page<AnimalRsDto> getAll(Pageable pageable, MyUserDetails userDetails, Long userId) {
+        if (userDetails.getUserRole() == UserRole.EMPLOYEE) {
+            return getAllByUserLogin(pageable, userDetails.getUsername());
+        }
+        if (userId == null) {
+            Page<Animal> allAnimals = animalRepository.findAll(pageable);
+            return allAnimals.map(animalMapper::mapToDto);
+        }
+        return getAllByUserId(pageable, userId);
     }
 
     @Transactional

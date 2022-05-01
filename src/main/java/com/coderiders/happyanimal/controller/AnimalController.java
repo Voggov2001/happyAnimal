@@ -3,8 +3,11 @@ package com.coderiders.happyanimal.controller;
 import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
+import com.coderiders.happyanimal.security.JwtTokenProvider;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import com.coderiders.happyanimal.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -49,9 +53,12 @@ public class AnimalController {
     //ЮЗЕРУ ПО ID, АДМИНУ МОЖНО И ТАК И ТАК ПРИ ЖЕЛАНИИ СДЕЛАТЬ, ВЕТЕРИНАРУ МОЖНО ОСТАВИТЬ
     @Operation(summary = "Выдача всех животных",
             description = "Если представлен id пользователся, то возвращает только животных конкретного поьзователя")
+    @PreAuthorize("hasAuthority('admin') || hasAuthority('employee')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<AnimalRsDto> getAllAnimals(Pageable pageable, Long userId) {
-        return animalService.getAll(pageable, userId);
+    public Page<AnimalRsDto> getAllAnimals(@Parameter(hidden = true) @AuthenticationPrincipal MyUserDetails myUserDetails,
+                                           @RequestParam(required = false) Long userId,
+                                           Pageable pageable) {
+        return animalService.getAll(pageable, myUserDetails, userId);
     }
 
     //АДМИН
