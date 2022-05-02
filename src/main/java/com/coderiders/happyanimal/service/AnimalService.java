@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.AnimalMapper;
 import com.coderiders.happyanimal.model.Animal;
@@ -70,6 +71,15 @@ public class AnimalService {
 
     @Transactional
     public AnimalRsDto editAnimal(Long animalId, AnimalRqDto animalRqDto) {
+        if (!animalRepository.getById(animalId).getStatus().equals(animalRqDto.getStatus())) {
+            if (animalRqDto.getStatus().equals(AnimalStatus.DEAD) || animalRqDto.getStatus().equals(AnimalStatus.SOLD)) {
+                List<Animal> animalList = userRepository.getById(animalRqDto.getUserId()).getAnimals();
+                animalList.remove(animalMapper.mapToAnimal(animalRqDto));
+                User user = userRepository.getById(animalRqDto.getUserId());
+                user.setAnimals(animalList);
+                userRepository.save(user);
+            }
+        }
         Animal animal = animalMapper.mapToAnimal(animalRqDto);
         animal.setId(animalId);
         return animalMapper.mapToDto(animalRepository.save(animal));
