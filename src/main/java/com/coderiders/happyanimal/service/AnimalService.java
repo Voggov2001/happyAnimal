@@ -1,6 +1,7 @@
 package com.coderiders.happyanimal.service;
 
 import com.coderiders.happyanimal.enums.AnimalStatus;
+import com.coderiders.happyanimal.enums.UserRole;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.AnimalMapper;
 import com.coderiders.happyanimal.model.Animal;
@@ -9,6 +10,7 @@ import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.repository.AnimalRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,12 +55,26 @@ public class AnimalService {
     }
 
     @Transactional
-    public Page<AnimalRsDto> getAll(Pageable pageable, Long userId) {
-        if (Optional.ofNullable(userId).isPresent()) {
-            return getAllByUserId(pageable, userId);
+    public Page<AnimalRsDto> getAllByUserLogin(Pageable pageable, String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(
+                () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL));
+        Page<Animal> allByUser = animalRepository.findAllByUser(user, pageable);
+        if (allByUser.isEmpty()) {
+            throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL);
         }
-        Page<Animal> allAnimals = animalRepository.findAll(pageable);
-        return allAnimals.map(animalMapper::mapToDto);
+        return allByUser.map(animalMapper::mapToDto);
+    }
+
+    @Transactional
+    public Page<AnimalRsDto> getAll(Pageable pageable, MyUserDetails userDetails, Long userId) {
+        if (userDetails.getUserRole() == UserRole.EMPLOYEE) {
+            return getAllByUserLogin(pageable, userDetails.getUsername());
+        }
+        if (userId == null) {
+            Page<Animal> allAnimals = animalRepository.findAll(pageable);
+            return allAnimals.map(animalMapper::mapToDto);
+        }
+        return getAllByUserId(pageable, userId);
     }
 
     @Transactional
@@ -71,8 +86,9 @@ public class AnimalService {
 
     @Transactional
     public AnimalRsDto editAnimal(Long animalId, AnimalRqDto animalRqDto) {
-        if (!animalRepository.getById(animalId).getStatus().equals(animalRqDto.getStatus())) {
-            if (animalRqDto.getStatus().equals(AnimalStatus.DEAD) || animalRqDto.getStatus().equals(AnimalStatus.SOLD)) {
+        if (!animalRepository.getById(animalId).getStatus().getName().equals(animalRqDto.getStatus())) {
+            if (animalRqDto.getStatus().equals(AnimalStatus.DEAD.getName()) ||
+                animalRqDto.getStatus().equals(AnimalStatus.SOLD.getName())) {
                 List<Animal> animalList = userRepository.getById(animalRqDto.getUserId()).getAnimals();
                 animalList.remove(animalMapper.mapToAnimal(animalRqDto));
                 User user = userRepository.getById(animalRqDto.getUserId());
@@ -80,6 +96,7 @@ public class AnimalService {
                 userRepository.save(user);
             }
         }
+
         Animal animal = animalMapper.mapToAnimal(animalRqDto);
         animal.setId(animalId);
         return animalMapper.mapToDto(animalRepository.save(animal));

@@ -65,4 +65,6 @@ public class AnimalMapper {
         }
         return animalRsDto;
     }
+
+    //TODO: узнать ближайшую дату осмотра, если статус - "Записано на осмотр"
 }
