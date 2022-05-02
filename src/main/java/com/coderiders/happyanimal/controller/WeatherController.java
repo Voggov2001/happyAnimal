@@ -24,19 +24,15 @@ import java.util.Objects;
 @Tag(name = "weather-controller", description = "погода на следующие три дня")
 public class WeatherController {
     private final WeatherService weatherService;
-    private final WeatherMapper weatherMapper;
 
     @Autowired
-    public WeatherController(WeatherService weatherService, WeatherMapper weatherMapper) {
+    public WeatherController(WeatherService weatherService) {
         this.weatherService = weatherService;
-        this.weatherMapper = weatherMapper;
     }
 
     //ВСЕ
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public WeatherDto getWeatherDto(@RequestParam int countOfDays) {
-        ResponseEntity<WeatherFromJson> weatherForecast = weatherService.getWeatherForecast(countOfDays);
-        WeatherFromJson weatherFromJson = Objects.requireNonNull(weatherForecast.getBody());
-        return weatherMapper.mapWeatherFromJsonToWeatherDto(weatherFromJson);
+        return weatherService.getWeatherForecast(countOfDays);
     }
 }

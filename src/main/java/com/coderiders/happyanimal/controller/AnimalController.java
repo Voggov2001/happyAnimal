@@ -3,7 +3,6 @@ package com.coderiders.happyanimal.controller;
 import com.coderiders.happyanimal.enums.AnimalStatus;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
-import com.coderiders.happyanimal.security.JwtTokenProvider;
 import com.coderiders.happyanimal.security.MyUserDetails;
 import com.coderiders.happyanimal.service.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,13 +64,13 @@ public class AnimalController {
     @Operation(summary = "Животные, разрешенные для выставки")
     @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/permitted")
-    public List<AnimalRsDto> getPermittedAnimals(){
+    public List<AnimalRsDto> getPermittedAnimals() {
         return animalService.getPermittedAnimals();
     }
 
     //ВСЕ
     @Operation(summary = "Статусы/состояния животных")
-    @GetMapping(path = "/states",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/states", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<String> getAllAnimalStates() {
         return AnimalStatus.getAllStatusNames();
     }

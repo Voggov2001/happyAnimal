@@ -25,14 +25,6 @@ public class AnimalKindController {
         this.animalKindService = service;
     }
 
-    //НИКТО
-    @Operation(summary = "Загружает заготовки видов в бд")
-    @PreAuthorize("hasAuthority('super_admin')")
-    @PostMapping
-    public void createAll() throws IOException {
-        animalKindService.createAll();
-    }
-
     //АДМИН
     @Operation(summary = "Все виды (Объекты) из базы")
     @PreAuthorize("hasAuthority('admin')")
@@ -47,13 +39,5 @@ public class AnimalKindController {
     @GetMapping(path = "only-kinds")
     public List<String> getAllKindNames() {
         return animalKindService.getAllOnlyKinds();
-    }
-
-    //АДМИН, но он и не нужен никому по сути
-    @Operation(summary = "Возвращает объект по названию вида")
-    @PreAuthorize("hasAuthority('admin')")
-    @GetMapping(path = "/{kindName}")
-    public AnimalKindDto getOneByKindName(@PathVariable String kindName) {
-        return animalKindService.getByKindName(kindName);
     }
 }
