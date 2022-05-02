@@ -26,7 +26,6 @@ public class AnimalService {
     private final UserRepository userRepository;
     private final AnimalMapper animalMapper;
     private static final String ERROR_MESSAGE_NOT_FOUND_ANIMAL = "Зверь не найден";
-    //private static final String ERROR_MESSAGE_NOT_FOUND_USER = "Пользователь не найден";
 
     @Autowired
     public AnimalService(AnimalRepository animalRepository,
@@ -96,7 +95,6 @@ public class AnimalService {
                 userRepository.save(user);
             }
         }
-
         Animal animal = animalMapper.mapToAnimal(animalRqDto);
         animal.setId(animalId);
         return animalMapper.mapToDto(animalRepository.save(animal));

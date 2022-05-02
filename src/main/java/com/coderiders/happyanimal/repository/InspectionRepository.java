@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.repository;
 
+import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.Inspection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,5 +17,7 @@ public interface InspectionRepository extends JpaRepository<Inspection, Long> {
     Page<Inspection> findAll(Pageable pageable);
 
     Optional<Inspection> findByDate(LocalDate localDate);
+
+    Optional<Inspection> findByAnimalListContaining(Animal animal);
 }
 
