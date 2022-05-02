@@ -6,6 +6,7 @@ import com.coderiders.happyanimal.model.Animal;
 import com.coderiders.happyanimal.model.dto.AnimalRqDto;
 import com.coderiders.happyanimal.model.dto.AnimalRsDto;
 import com.coderiders.happyanimal.repository.AnimalKindRepository;
+import com.coderiders.happyanimal.repository.InspectionRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,16 +18,18 @@ public class AnimalMapper {
     private final AnimalKindRepository animalKindRepository;
     private final AnimalKindMapper animalKindMapper;
     private final UserMapper userMapper;
+    private final InspectionRepository inspectionRepository;
 
     @Autowired
     public AnimalMapper(UserRepository userRepository,
                         AnimalKindRepository animalKindRepository,
                         AnimalKindMapper animalKindMapper,
-                        UserMapper userMapper) {
+                        UserMapper userMapper, InspectionRepository inspectionRepository) {
         this.userRepository = userRepository;
         this.animalKindRepository = animalKindRepository;
         this.animalKindMapper = animalKindMapper;
         this.userMapper = userMapper;
+        this.inspectionRepository = inspectionRepository;
     }
 
     @Transactional
@@ -58,13 +61,18 @@ public class AnimalMapper {
                 .location(animal.getLocation())
                 .featuresOfKeeping(animal.getFeaturesOfKeeping())
                 .externalFeatures(animal.getExternalFeatures())
-                .status(animal.getStatus().getName())
+                .status(animal.getStatus().getName().equals(AnimalStatus.BOOKED_INSPECTION.getName())?
+                        animal
+                                .getStatus()
+                                .getName() + " (" + inspectionRepository
+                                .findByAnimalListContaining(animal)
+                                .get()
+                                .getDate() + ")"
+                        : animal.getStatus().getName())
                 .build();
         if (animal.getUser() != null) {
             animalRsDto.setUserRsDto(userMapper.mapToResponseDto(animal.getUser()));
         }
         return animalRsDto;
     }
-
-    //TODO: узнать ближайшую дату осмотра, если статус - "Записано на осмотр"
 }
