@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,8 +86,9 @@ public class AnimalService {
 
     @Transactional
     public AnimalRsDto editAnimal(Long animalId, AnimalRqDto animalRqDto) {
-        if (!animalRepository.getById(animalId).getStatus().equals(animalRqDto.getStatus())) {
-            if (animalRqDto.getStatus().equals(AnimalStatus.DEAD) || animalRqDto.getStatus().equals(AnimalStatus.SOLD)) {
+        if (!animalRepository.getById(animalId).getStatus().getName().equals(animalRqDto.getStatus())) {
+            if (animalRqDto.getStatus().equals(AnimalStatus.DEAD.getName()) ||
+                animalRqDto.getStatus().equals(AnimalStatus.SOLD.getName())) {
                 List<Animal> animalList = userRepository.getById(animalRqDto.getUserId()).getAnimals();
                 animalList.remove(animalMapper.mapToAnimal(animalRqDto));
                 User user = userRepository.getById(animalRqDto.getUserId());
