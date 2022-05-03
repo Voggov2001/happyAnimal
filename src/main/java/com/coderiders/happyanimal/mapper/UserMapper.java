@@ -48,7 +48,7 @@ public class UserMapper {
         return MyUserDetails.builder()
                 .username(user.getLogin())
                 .password(user.getPassword())
-                .authorities(user.getUserRole().getAuthorities())
+                .userRole(user.getUserRole())
                 .isActive(user.isActive())
                 .build();
     }
