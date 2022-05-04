@@ -1,10 +1,9 @@
 package com.coderiders.happyanimal.service;
 
 import com.coderiders.happyanimal.enums.AnimalStatus;
-import com.coderiders.happyanimal.model.Animal;
-import com.coderiders.happyanimal.model.MessageFromScheduler;
-import com.coderiders.happyanimal.model.Task;
-import com.coderiders.happyanimal.model.TaskLog;
+import com.coderiders.happyanimal.enums.RepeatType;
+import com.coderiders.happyanimal.model.*;
+import com.coderiders.happyanimal.model.dto.WeatherDto;
 import com.coderiders.happyanimal.repository.AnimalRepository;
 import com.coderiders.happyanimal.repository.TaskLogRepository;
 import com.coderiders.happyanimal.repository.TaskRepository;
@@ -24,22 +23,24 @@ import java.util.Optional;
 @NoArgsConstructor
 public class SchedulerService {
     private TaskRepository taskRepository;
-    private MessageFromScheduler message;
     private SimpMessagingTemplate simpMessagingTemplate;
     private TaskLogRepository taskLogRepository;
     private AnimalRepository animalRepository;
+    private WeatherService weatherService;
+
+    boolean winterFlag = false;
 
     @Autowired
     public SchedulerService(TaskRepository taskRepository,
-                            MessageFromScheduler message,
                             SimpMessagingTemplate simpMessagingTemplate,
                             TaskLogRepository taskLogRepository,
-                            AnimalRepository animalRepository) {
+                            AnimalRepository animalRepository,
+                            WeatherService weatherService) {
         this.taskRepository = taskRepository;
-        this.message = message;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.taskLogRepository = taskLogRepository;
         this.animalRepository = animalRepository;
+        this.weatherService = weatherService;
     }
 
     @Transactional
@@ -47,7 +48,7 @@ public class SchedulerService {
     public void updateTasksEvery10min() {
         List<Task> tasks = taskRepository.findAll();
         tasks.forEach(task -> {
-            if (task.isCompleted() && LocalDateTime.now().isAfter(task.getExpiresDateTime())) {
+            if (task.isCompleted()) {
                 TaskLog taskLog = TaskLog.builder()
                         .taskId(task.getId())
                         .taskType(task.getTaskType())
@@ -108,5 +109,45 @@ public class SchedulerService {
                 animalRepository.save(animal);
             }
         });
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * 11,12,1 *")
+    public void setWinterFlagTrueEveryWinter() {
+        WeatherDto weatherDto = weatherService.getWeatherForecast(1);
+        if (Objects.requireNonNull(weatherDto).getTempC() <= -10 && !winterFlag) {
+            setTaskToEveryAnimal("Перевести животное в зимний вольер");
+            winterFlag = true;
+        }
+
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * 3,4,5 *")
+    public void setWinterFlagFalseEverySpring() {
+        WeatherDto weatherDto = weatherService.getWeatherForecast(1);
+        if (Objects.requireNonNull(weatherDto).getTempC() > 5 && winterFlag) {
+            setTaskToEveryAnimal("Перевести животное в летний вольер");
+            winterFlag = false;
+        }
+
+    }
+
+    @Transactional
+    public void setTaskToEveryAnimal(String taskType) {
+        List<Animal> animals = animalRepository.findAll();
+        if (!animals.isEmpty()) {
+            animals.forEach(animal -> {
+                if (animal.getStatus() != AnimalStatus.DEAD || animal.getStatus() != AnimalStatus.SOLD) {
+                    Task task = Task.builder()
+                            .taskType(new TaskType(taskType))
+                            .completed(false)
+                            .expiresDateTime(LocalDateTime.now().plusDays(3))
+                            .repeatType(RepeatType.ONCE)
+                            .build();
+                    taskRepository.save(task);
+                }
+            });
+        }
     }
 }
