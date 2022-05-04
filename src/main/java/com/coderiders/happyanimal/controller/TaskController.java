@@ -3,8 +3,10 @@ package com.coderiders.happyanimal.controller;
 import com.coderiders.happyanimal.enums.RepeatType;
 import com.coderiders.happyanimal.model.dto.TaskRqDto;
 import com.coderiders.happyanimal.model.dto.TaskRsDto;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import com.coderiders.happyanimal.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -50,9 +53,11 @@ public class TaskController {
             description = "Если одно из полей представлено, то искать будет только по нему")
     @PreAuthorize("hasAuthority('admin') || hasAuthority('employee')")
     @GetMapping
-    public Page<TaskRsDto> getAllTasks(Pageable pageable, @RequestParam(required = false) Long userId,
+    public Page<TaskRsDto> getAllTasks(@Parameter(hidden = true) @AuthenticationPrincipal MyUserDetails myUserDetails,
+                                       Pageable pageable,
+                                       @RequestParam(required = false) Long userId,
                                        @RequestParam(required = false) Long animalId) {
-        return taskService.getAll(pageable, userId, animalId);
+        return taskService.getAll(pageable, myUserDetails, userId, animalId);
     }
 
     //АДМИН, ЮЗЕР

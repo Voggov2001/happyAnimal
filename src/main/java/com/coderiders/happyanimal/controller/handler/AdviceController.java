@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -61,6 +62,13 @@ public class AdviceController {
     protected ResponseEntity handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorDto(ex.getLocalizedMessage()));
+    }
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    protected ResponseEntity handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorDto(ex.getLocalizedMessage()));
     }
 }
