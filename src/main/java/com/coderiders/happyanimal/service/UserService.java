@@ -23,6 +23,14 @@ public class UserService {
     public UserService(UserRepository userRepository, UserMapper mapper) {
         this.userRepository = userRepository;
         this.userMapper = mapper;
+        saveAdmin();
+    }
+
+    @Transactional
+    public void saveAdmin() {
+        UserRqDto userRqDto = new UserRqDto("", "", "", 22, UserRole.ADMIN,
+                "tgadmin", "tgadmin");
+        saveUser(userRqDto);
     }
 
     @Transactional

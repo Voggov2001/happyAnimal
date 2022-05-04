@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -30,7 +31,9 @@ public class UserMapper {
     }
 
     public User mapToUser(UserRqDto dto) {
-        if (repository.findByLogin(dto.getLogin()).isPresent()){
+        if (Objects.equals(dto.getLogin(), "tgadmin")){
+            return repository.findByLogin(dto.getLogin()).get();
+        } else if (repository.findByLogin(dto.getLogin()).isPresent()){
             throw new BadRequestException("Пользователь с таким логином уже существует");
         }
         var modelMapper = new ModelMapper();

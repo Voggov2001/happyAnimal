@@ -40,7 +40,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity authenticate(@RequestBody AuthenticationDto authenticationDto) {
+    public ResponseEntity<AuthenticationRsDto> authenticate(@RequestBody AuthenticationDto authenticationDto) {
         String login = authenticationDto.getLogin();
         String password = authenticationDto.getPassword();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));

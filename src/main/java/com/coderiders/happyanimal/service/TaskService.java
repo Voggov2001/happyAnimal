@@ -95,7 +95,7 @@ public class TaskService {
     private List<TaskRsDto> getAnimalsTasks(Page<Animal> animals) {
         List<TaskRsDto> tasks = new ArrayList<>();
         animals.forEach(animal -> {
-            List<Task> animalTasks = animal.getTasks();
+            List<Task> animalTasks = taskRepository.findAllByAnimal(animal);
             tasks.addAll(animalTasks.stream().map(taskMapper::mapToRsDto).collect(Collectors.toList()));
         });
         return tasks;
