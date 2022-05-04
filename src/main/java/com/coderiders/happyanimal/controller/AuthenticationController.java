@@ -1,6 +1,7 @@
 package com.coderiders.happyanimal.controller;
 
 import com.coderiders.happyanimal.exceptions.NotFoundException;
+import com.coderiders.happyanimal.exceptions.UnAuthorizedException;
 import com.coderiders.happyanimal.mapper.UserMapper;
 import com.coderiders.happyanimal.model.User;
 import com.coderiders.happyanimal.model.dto.AuthenticationRsDto;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,18 +43,22 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationRsDto> authenticate(@RequestBody AuthenticationDto authenticationDto) {
-        String login = authenticationDto.getLogin();
-        String password = authenticationDto.getPassword();
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
-        User user = userRepository.findByLogin(login).orElseThrow(
-                () -> new NotFoundException("Пользователь с логином " + login + " не найден"));
-        String token = jwtTokenProvider.createToken(login, user.getUserRole().name());
-        var created = userMapper.mapToAuthenticationRsDto(user, token);
-        var url = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(created.getId())
-                .toUri();
-        return ResponseEntity.created(url).body(created);
+        try {
+            String login = authenticationDto.getLogin();
+            String password = authenticationDto.getPassword();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+            User user = userRepository.findByLogin(login).orElseThrow(
+                    () -> new NotFoundException("Пользователь с логином " + login + " не найден"));
+            String token = jwtTokenProvider.createToken(login, user.getUserRole().name());
+            var created = userMapper.mapToAuthenticationRsDto(user, token);
+            var url = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(created.getId())
+                    .toUri();
+            return ResponseEntity.created(url).body(created);
+        } catch (AuthenticationException e) {
+            throw new UnAuthorizedException(e.getLocalizedMessage());
+        }
     }
 
     @PostMapping("/logout")
