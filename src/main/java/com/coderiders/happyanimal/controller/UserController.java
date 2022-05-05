@@ -64,7 +64,7 @@ public class UserController {
     }
     @Operation(summary = "Все активные пользователи с ролью EMPLOYEE")
     @PreAuthorize("hasAuthority('admin')")
-    @GetMapping(path = "/allActiveEmployee", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/activeUsers", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<UserRsDto> getAllActiveEmployee(Pageable pageable) {
         return userService.getAllActiveByRole(pageable);
     }

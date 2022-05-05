@@ -73,7 +73,7 @@ public class UserService {
     }
     @Transactional
     public Page<UserRsDto> getAllByRole(Pageable pageable, String rolename) {
-        Page<User> users = userRepository.getAllByUserRole(UserRole.valueOf(rolename), pageable);
+        Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(rolename), pageable);
         return users.map(userMapper::mapToResponseDto);
     }
 }
