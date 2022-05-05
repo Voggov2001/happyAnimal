@@ -58,8 +58,8 @@ public class UserService {
     }
 
     @Transactional
-    public Page<UserRsDto> getAllActiveByRole(Pageable pageable) {
-        Page<User> users = userRepository.findAllByUserRole(UserRole.EMPLOYEE, pageable);
+    public Page<UserRsDto> getAllActiveByRole(Pageable pageable, UserRole userRole) {
+        Page<User> users = userRepository.findAllByUserRole(userRole, pageable);
         users = new PageImpl<>(users
                 .get()
                 .filter(User::isActive)
