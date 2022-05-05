@@ -44,7 +44,7 @@ public class SchedulerService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 */5 * ? * *")
+    @Scheduled(cron = "0 */4 * * * *")
     public void updateTasksEvery5min() {
         List<Task> tasks = taskRepository.findAll();
         tasks.forEach(task -> {
