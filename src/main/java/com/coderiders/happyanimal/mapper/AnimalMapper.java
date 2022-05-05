@@ -50,6 +50,9 @@ public class AnimalMapper {
     }
 
     public AnimalRsDto mapToDto(Animal animal) {
+        if (animal.getStatus() == AnimalStatus.DEAD) {
+            animal.setUser(null);
+        }
         AnimalRsDto animalRsDto = AnimalRsDto.builder()
                 .id(animal.getId())
                 .name(animal.getName())
