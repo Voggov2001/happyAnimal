@@ -9,9 +9,12 @@ import com.coderiders.happyanimal.model.dto.UserRsDto;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -59,6 +62,15 @@ public class UserService {
         return users.map(userMapper::mapToResponseDto);
     }
 
+    @Transactional
+    public Page<UserRsDto> getAllActiveByRole(Pageable pageable) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.EMPLOYEE, pageable);
+        users = new PageImpl<>(users
+                .get()
+                .filter(User::isActive)
+                .collect(Collectors.toList()));
+        return users.map(userMapper::mapToResponseDto);
+    }
     @Transactional
     public Page<UserRsDto> getAllByRole(Pageable pageable, String rolename) {
         Page<User> users = userRepository.getAllByUserRole(UserRole.valueOf(rolename), pageable);
