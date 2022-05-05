@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.TaskLogMapper;
 import com.coderiders.happyanimal.model.dto.TaskLogRsDto;
 import com.coderiders.happyanimal.repository.TaskLogRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -27,21 +29,21 @@ public class TaskLogService {
     }
 
     @Transactional
-    public Page<TaskLogRsDto> getAll(Pageable pageable, String startDateTime, String endDateTime) {
-        Optional<String> dtStartString = Optional.ofNullable(startDateTime);
-        Optional<String> dtEndString = Optional.ofNullable(endDateTime);
-        LocalDateTime dtStart;
-        LocalDateTime dtEnd;
+    public Page<TaskLogRsDto> getAll(Pageable pageable, String startDate, String endDate) {
+        Optional<String> dtStartString = Optional.ofNullable(startDate);
+        Optional<String> dtEndString = Optional.ofNullable(endDate);
+        LocalDate dtStart;
+        LocalDate dtEnd;
 
         if (dtStartString.isPresent() && dtEndString.isPresent()) {
-            dtStart = LocalDateTime.parse(startDateTime, DateTimeFormatter.ISO_DATE_TIME);
-            dtEnd = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE_TIME);
+            dtStart = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+            dtEnd = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
             return getAllByDateBetween(pageable, dtStart, dtEnd);
         } else if (dtStartString.isPresent()) {
-            dtStart = LocalDateTime.parse(startDateTime, DateTimeFormatter.ISO_DATE_TIME);
+            dtStart = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
             return getAllByDate(pageable, dtStart);
         } else if (dtEndString.isPresent()) {
-            dtEnd = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE_TIME);
+            dtEnd = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
             return getAllByDate(pageable, dtEnd);
         } else {
             return taskLogRepository.findAll(pageable).map(taskLogMapper::toRsDto);
@@ -49,15 +51,19 @@ public class TaskLogService {
     }
 
     @Transactional
-    public Page<TaskLogRsDto> getAllByDate(Pageable pageable, LocalDateTime localDateTime) {
-        LocalDateTime todayStart = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 0, 0);
-        LocalDateTime todayEnd = LocalDateTime.of(localDateTime.getYear(), localDateTime.getMonth(), localDateTime.getDayOfMonth(), 23, 59);
-        return getAllByDateBetween(pageable, todayStart, todayEnd);
+    public Page<TaskLogRsDto> getAllByDate(Pageable pageable, LocalDate localDate) {
+        return getAllByDateBetween(pageable, localDate, localDate);
     }
 
     @Transactional
-    public Page<TaskLogRsDto> getAllByDateBetween(Pageable pageable, LocalDateTime sinceDateTime, LocalDateTime untilDateTime) {
-        return taskLogRepository.getAllByCompletedDateTimeBetween(pageable, sinceDateTime, untilDateTime).map(taskLogMapper::toRsDto);
+    public Page<TaskLogRsDto> getAllByDateBetween(Pageable pageable, LocalDate sinceDate, LocalDate untilDate) {
+        LocalDateTime todayStart = LocalDateTime.of(sinceDate.getYear(), sinceDate.getMonth(), sinceDate.getDayOfMonth(), 0, 0);
+        LocalDateTime todayEnd = LocalDateTime.of(untilDate.getYear(), untilDate.getMonth(), untilDate.getDayOfMonth(), 23, 59);
+        return taskLogRepository.getAllByCompletedDateTimeBetween(pageable, todayStart, todayEnd).map(taskLogMapper::toRsDto);
 
+    }
+
+    public TaskLogRsDto getById(Long taskLogId) {
+        return taskLogMapper.toRsDto(taskLogRepository.findById(taskLogId).orElseThrow(() -> new NotFoundException("Запись не найдена")));
     }
 }

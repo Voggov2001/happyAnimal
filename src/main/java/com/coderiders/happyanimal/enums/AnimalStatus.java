@@ -39,12 +39,6 @@ public enum AnimalStatus {
         throw new NotFoundException("Статус не найден");
     }
 
-    public static List<AnimalStatus> getByPermission(boolean permissionToParticipate) {
-        return Arrays.stream(values())
-                .filter(v -> v.permissionToParticipate)
-                .collect(Collectors.toList());
-    }
-
     public static List<String> getAllStatusNames(){
         return Arrays.stream(values())
                 .map(v-> v.name)

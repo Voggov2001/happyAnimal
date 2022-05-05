@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.enums.UserRole;
 import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.TaskMapper;
 import com.coderiders.happyanimal.model.Animal;
@@ -12,6 +13,7 @@ import com.coderiders.happyanimal.repository.AnimalRepository;
 import com.coderiders.happyanimal.repository.TaskRepository;
 import com.coderiders.happyanimal.repository.TaskTypeRepository;
 import com.coderiders.happyanimal.repository.UserRepository;
+import com.coderiders.happyanimal.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -52,15 +54,18 @@ public class TaskService {
     }
 
     @Transactional
-    public Page<TaskRsDto> getAll(Pageable pageable, Long userId, Long animalId) {
+    public Page<TaskRsDto> getAll(Pageable pageable, MyUserDetails userDetails, Long userId, Long animalId) {
+        if (userDetails.getUserRole() == UserRole.EMPLOYEE) {
+            return getByUserLogin(pageable, userDetails.getUsername());
+        }
         if (Optional.ofNullable(userId).isPresent()) {
             return getByUserId(pageable, userId);
-        } else if (Optional.ofNullable(animalId).isPresent()) {
-            return getByAnimalId(pageable, animalId);
-        } else {
-            Page<Task> allTasks = taskRepository.findAll(pageable);
-            return allTasks.map(taskMapper::mapToRsDto);
         }
+        if (Optional.ofNullable(animalId).isPresent()) {
+            return getByAnimalId(pageable, animalId);
+        }
+        Page<Task> allTasks = taskRepository.findAll(pageable);
+        return allTasks.map(taskMapper::mapToRsDto);
     }
 
     @Transactional
@@ -71,15 +76,32 @@ public class TaskService {
         if (animals.isEmpty()) {
             throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL);
         }
-        List<TaskRsDto> tasks = new ArrayList<>();
-        animals.forEach(animal -> {
-            List<Task> animalTasks = animal.getTasks();
-            tasks.addAll(animalTasks.stream().map(taskMapper::mapToRsDto).collect(Collectors.toList()));
-        });
+        List<TaskRsDto> tasks = getAnimalsTasks(animals);
         return new PageImpl<>(tasks, pageable, pageable.getOffset());
     }
 
-    public Page<TaskRsDto> getByAnimalId(Pageable pageable, Long animalId) {
+    @Transactional
+    public Page<TaskRsDto> getByUserLogin(Pageable pageable, String userLogin) {
+        User user = userRepository.findByLogin(userLogin).orElseThrow(
+                () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_USER));
+        Page<Animal> animals = animalRepository.findAllByUser(user, pageable);
+        if (animals.isEmpty()) {
+            throw new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL);
+        }
+        List<TaskRsDto> tasks = getAnimalsTasks(animals);
+        return new PageImpl<>(tasks, pageable, pageable.getOffset());
+    }
+
+    private List<TaskRsDto> getAnimalsTasks(Page<Animal> animals) {
+        List<TaskRsDto> tasks = new ArrayList<>();
+        animals.forEach(animal -> {
+            List<Task> animalTasks = taskRepository.findAllByAnimal(animal);
+            tasks.addAll(animalTasks.stream().map(taskMapper::mapToRsDto).collect(Collectors.toList()));
+        });
+        return tasks;
+    }
+
+    private Page<TaskRsDto> getByAnimalId(Pageable pageable, Long animalId) {
         Animal animal = animalRepository.findById(animalId).orElseThrow(
                 () -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_ANIMAL));
         List<TaskRsDto> tasks = animal.getTasks()

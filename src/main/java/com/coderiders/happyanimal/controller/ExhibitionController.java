@@ -62,6 +62,7 @@ public class ExhibitionController {
 
     //АДМИН, мб ЮЗЕР
     @Operation(summary = "Все запланированные выставки")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(produces = {"application/json"})
     public Page<ExhibitionRsDto> getAll(Pageable pageable) {
         return exhibitionService.getAll(pageable);
@@ -69,6 +70,7 @@ public class ExhibitionController {
 
     //АДМИН, мб ЮЗЕР
     @Operation(summary = "Выставка по id")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = {"/{id}"})
     public ExhibitionRsDto getById(@PathVariable Long id) {
         return exhibitionService.getById(id);
@@ -76,6 +78,7 @@ public class ExhibitionController {
 
     //АДМИН, мб ЮЗЕР
     @Operation(summary = "Выставка по дате")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/date/{date}")
     public ExhibitionRsDto getByDate(@PathVariable String date) {
         return exhibitionService.findByDate(date);
@@ -83,6 +86,7 @@ public class ExhibitionController {
 
     //АДМИН, мб ЮЗЕР
     @Operation(summary = "Животные одной выставки")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/{id}/animals")
     public List<AnimalRsDto> getAnimals(@PathVariable Long id) {
         return exhibitionService.getAllAnimals(id);

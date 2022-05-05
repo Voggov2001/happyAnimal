@@ -1,6 +1,8 @@
 package com.coderiders.happyanimal.security;
 
+import com.coderiders.happyanimal.controller.handler.ErrorDto;
 import com.coderiders.happyanimal.exceptions.UnAuthorizedException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +28,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) servletRequest);
-        if (token != null && token.matches("[Bearer ].*")) {
+        if (token != null && token.matches("Bearer .*")) {
             var tokenArray = token.split(" ");
             token = tokenArray[1];
         }
@@ -39,8 +41,10 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         } catch (UnAuthorizedException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).sendError(HttpStatus.UNAUTHORIZED.value());
-            throw new UnAuthorizedException("Ошибка авторизации");
+            ObjectMapper objectMapper = new ObjectMapper();
+            ErrorDto errorDto = new ErrorDto(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, e.getLocalizedMessage());
+            servletResponse.setCharacterEncoding("UTF-8");
+            servletResponse.getWriter().write(objectMapper.writeValueAsString(errorDto));
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

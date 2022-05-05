@@ -57,4 +57,11 @@ public class UserController {
     public UserRsDto getById(@PathVariable Long id) {
         return userService.getById(id);
     }
+
+    @Operation(summary = "Все активные пользователи с ролью EMPLOYEE")
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping(path = "/allActiveEmployee", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<UserRsDto> getAllActiveEmployee(Pageable pageable) {
+        return userService.getAllActiveByRole(pageable);
+    }
 }

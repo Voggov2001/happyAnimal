@@ -15,4 +15,5 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findById(Long id);
     Page<Task> findAll(Pageable pageable);
+    List<Task> findAllByAnimal(Animal animal);
 }

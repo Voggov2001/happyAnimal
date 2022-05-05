@@ -3,6 +3,7 @@ package com.coderiders.happyanimal.model;
 import com.coderiders.happyanimal.enums.RepeatType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,11 +31,13 @@ public class TaskLog {
     private TaskType taskType;
 
     @Column(name = "date_expires")
-    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    @JsonFormat(pattern= "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime expiresDateTime;
 
     @Column(name = "date_completed")
-    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
+    @JsonFormat(pattern= "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="GMT")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime completedDateTime;
 
     @Column(name = "repeat_type")
