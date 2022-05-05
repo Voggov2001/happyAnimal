@@ -31,8 +31,11 @@ public class UserMapper {
     }
 
     public User mapToUser(UserRqDto dto) {
-        if (Objects.equals(dto.getLogin(), "tgadmin")){
-            return repository.findByLogin(dto.getLogin()).get();
+        if (Objects.equals(dto.getLogin(), "tgadmin")) {
+            Optional<User> user = repository.findByLogin(dto.getLogin());
+            if (user.isPresent()) {
+                return user.get();
+            }
         } else if (repository.findByLogin(dto.getLogin()).isPresent()){
             throw new BadRequestException("Пользователь с таким логином уже существует");
         }
