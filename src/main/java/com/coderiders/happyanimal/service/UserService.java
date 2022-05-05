@@ -66,4 +66,10 @@ public class UserService {
                 .collect(Collectors.toList()));
         return users.map(userMapper::mapToResponseDto);
     }
+
+    @Transactional
+    public Page<UserRsDto> getAllByRole(Pageable pageable, UserRole userRole) {
+        Page<User> users = userRepository.findAllByUserRole(userRole, pageable);
+        return users.map(userMapper::mapToResponseDto);
+    }
 }

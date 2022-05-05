@@ -61,8 +61,15 @@ public class UserController {
 
     @Operation(summary = "Все активные пользователи с выбранной ролью")
     @PreAuthorize("hasAuthority('admin')")
-    @GetMapping(path = "/allActiveEmployee", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/allActiveByRole", produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<UserRsDto> getAllActiveByRole(Pageable pageable, @PathVariable UserRole userRole) {
         return userService.getAllActiveByRole(pageable, userRole);
+    }
+
+    @Operation(summary = "Все пользователи с выбранной ролью")
+    @PreAuthorize("hasAuthority('admin')")
+    @GetMapping(path = "/allActiveEmployee", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<UserRsDto> getAllByRole(Pageable pageable, @PathVariable UserRole userRole) {
+        return userService.getAllByRole(pageable, userRole);
     }
 }
