@@ -59,6 +59,7 @@ public class UserController {
         return userService.getById(id);
     }
     @Operation(summary = "Юзеры по роли")
+    @PreAuthorize("hasAuthority('admin')")
     @GetMapping(path = "/role/{userRole}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<UserRsDto> getAllUsersByRole(Pageable pageable, @PathVariable String userRole) {
         return userService.getAllByRole(pageable, userRole);
