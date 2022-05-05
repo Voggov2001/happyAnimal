@@ -5,6 +5,8 @@ import com.coderiders.happyanimal.model.dto.TaskLogRsDto;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class TaskLogMapper {
     @Transactional
@@ -14,8 +16,8 @@ public class TaskLogMapper {
                 .taskId(taskLog.getTaskId())
                 .userId(taskLog.getUserId())
                 .taskType(taskLog.getTaskType().getType())
-                .expiresDateTime(taskLog.getExpiresDateTime().toString())
-                .completedDateTime(taskLog.getCompletedDateTime().toString())
+                .expiresDateTime(taskLog.getExpiresDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")))
+                .completedDateTime(taskLog.getCompletedDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")))
                 .repeatType(taskLog.getRepeatType().getTypeName())
                 .animalId(taskLog.getAnimal().getId())
                 .animalName(taskLog.getAnimal().getName())
