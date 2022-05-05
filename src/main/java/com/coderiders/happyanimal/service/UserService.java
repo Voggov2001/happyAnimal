@@ -9,9 +9,12 @@ import com.coderiders.happyanimal.model.dto.UserRsDto;
 import com.coderiders.happyanimal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -36,6 +39,7 @@ public class UserService {
     @Transactional
     public UserRsDto saveUser(UserRqDto userRqDto) {
         var user = userMapper.mapToUser(userRqDto);
+        user.setActive(true);
         userRepository.save(user);
         return userMapper.mapToResponseDto(user);
     }
@@ -54,14 +58,12 @@ public class UserService {
     }
 
     @Transactional
-    public Page<UserRsDto> getByName(String name, Pageable pageable) {
-        Page<User> users = userRepository.getAllByNameContainsIgnoreCase(name, pageable);
-        return users.map(userMapper::mapToResponseDto);
-    }
-
-    @Transactional
-    public Page<UserRsDto> getAllByRole(UserRole role, Pageable pageable) {
-        Page<User> users = userRepository.getAllByUserRole(role, pageable);
+    public Page<UserRsDto> getAllActiveByRole(Pageable pageable) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.EMPLOYEE, pageable);
+        users = new PageImpl<>(users
+                .get()
+                .filter(User::isActive)
+                .collect(Collectors.toList()));
         return users.map(userMapper::mapToResponseDto);
     }
 }
