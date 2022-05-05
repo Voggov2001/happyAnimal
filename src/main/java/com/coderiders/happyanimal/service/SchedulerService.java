@@ -44,8 +44,8 @@ public class SchedulerService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 */10 * ? * *")
-    public void updateTasksEvery10min() {
+    @Scheduled(cron = "0 */5 * ? * *")
+    public void updateTasksEvery5min() {
         List<Task> tasks = taskRepository.findAll();
         tasks.forEach(task -> {
             if (task.isCompleted()) {
@@ -86,7 +86,7 @@ public class SchedulerService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 */5 * ? * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void sendNotificationsEvery5min() {
         List<Task> tasks = taskRepository.findAll();
         tasks.forEach(task -> {
