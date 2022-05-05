@@ -1,5 +1,6 @@
 package com.coderiders.happyanimal.service;
 
+import com.coderiders.happyanimal.exceptions.NotFoundException;
 import com.coderiders.happyanimal.mapper.TaskLogMapper;
 import com.coderiders.happyanimal.model.dto.TaskLogRsDto;
 import com.coderiders.happyanimal.repository.TaskLogRepository;
@@ -60,5 +61,9 @@ public class TaskLogService {
         LocalDateTime todayEnd = LocalDateTime.of(untilDate.getYear(), untilDate.getMonth(), untilDate.getDayOfMonth(), 23, 59);
         return taskLogRepository.getAllByCompletedDateTimeBetween(pageable, todayStart, todayEnd).map(taskLogMapper::toRsDto);
 
+    }
+
+    public TaskLogRsDto getById(Long taskLogId) {
+        return taskLogMapper.toRsDto(taskLogRepository.findById(taskLogId).orElseThrow(() -> new NotFoundException("Запись не найдена")));
     }
 }
