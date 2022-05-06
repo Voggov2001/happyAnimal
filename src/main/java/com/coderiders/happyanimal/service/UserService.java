@@ -57,13 +57,19 @@ public class UserService {
         return userMapper.mapToResponseDto(user);
     }
 
+
     @Transactional
-    public Page<UserRsDto> getAllActiveByRole(Pageable pageable) {
-        Page<User> users = userRepository.findAllByUserRole(UserRole.EMPLOYEE, pageable);
+    public Page<UserRsDto> getAllActiveByRole(Pageable pageable, String userRole) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(userRole), pageable);
         users = new PageImpl<>(users
                 .get()
                 .filter(User::isActive)
                 .collect(Collectors.toList()));
+        return users.map(userMapper::mapToResponseDto);
+    }
+    @Transactional
+    public Page<UserRsDto> getAllByRole(Pageable pageable, String rolename) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(rolename), pageable);
         return users.map(userMapper::mapToResponseDto);
     }
 }

@@ -70,7 +70,7 @@ public class TaskController {
 
     //АДМИН, юзеру без надобности
     @Operation(summary = "Все типы повторения")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('admin') || hasAuthority('employee')")
     @GetMapping(path = "/repeat-types")
     public List<String> getAllRepeatTypes() {
         return RepeatType.getValues();
