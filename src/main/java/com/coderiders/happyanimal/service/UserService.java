@@ -58,8 +58,8 @@ public class UserService {
     }
 
     @Transactional
-    public Page<UserRsDto> getAllActiveByRole(Pageable pageable, UserRole userRole) {
-        Page<User> users = userRepository.findAllByUserRole(userRole, pageable);
+    public Page<UserRsDto> getAllActiveByRole(Pageable pageable, String userRole) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(userRole), pageable);
         users = new PageImpl<>(users
                 .get()
                 .filter(User::isActive)
@@ -68,8 +68,9 @@ public class UserService {
     }
 
     @Transactional
-    public Page<UserRsDto> getAllByRole(Pageable pageable, UserRole userRole) {
-        Page<User> users = userRepository.findAllByUserRole(userRole, pageable);
+    public Page<UserRsDto> getAllByRole(Pageable pageable, String rolename) {
+        Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(rolename), pageable);
         return users.map(userMapper::mapToResponseDto);
     }
+
 }
