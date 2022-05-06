@@ -37,10 +37,7 @@ public class AnimalRepTest {
     private TestEntityManager entityManager;
     @Autowired
     private AnimalRepository animalRepository;
-    @Autowired
-    private AnimalKindRepository animalKindRepository;
-    @Autowired
-    private UserRepository userRepository;
+
 
     AnimalKind animalKind1 = new AnimalKind("Жираф", "Млекопитающие", "dsfsdfsmfk", "Парнокопытные".getBytes(StandardCharsets.UTF_8));
 

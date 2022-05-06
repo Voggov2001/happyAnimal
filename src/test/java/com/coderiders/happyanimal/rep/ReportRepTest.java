@@ -1,6 +1,5 @@
 package com.coderiders.happyanimal.rep;
 
-import com.coderiders.happyanimal.model.Inspection;
 import com.coderiders.happyanimal.model.Report;
 import com.coderiders.happyanimal.model.User;
 import com.coderiders.happyanimal.repository.ReportRepository;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,19 +29,19 @@ public class ReportRepTest {
     @Autowired
     private ReportRepository reportRepository;
 
-    User user = User.builder()
-            .age(47)
-            .name("Иван")
-            .build();
-    Report report = Report.builder().date(LocalDate.now().toString()).text("Все ок").user(user).build();
-
 
     @Test
     @Transactional
-    void findAll(){
-        entityManager.persist(user);
+    void findById() {
+        Report persist = entityManager.persist(new Report());
+        assertEquals(reportRepository.findById(1L).orElse(persist), persist);
+    }
+
+    @Test
+    @Transactional
+    void findAll() {
         entityManager.persist(new Report());
-        entityManager.persist(report);
+        entityManager.persist(new Report());
         List<Report> found = reportRepository.findAll();
         assertEquals(found.size(), 2);
     }
@@ -51,17 +49,11 @@ public class ReportRepTest {
 
     @Test
     @Transactional
-    void findById(){
-        Report persist = entityManager.persist(report);
-        assertEquals(reportRepository.findById(1L).orElse(report), report);
-    }
-    @Test
-    @Transactional
-    void findAllByUser(){
-        entityManager.persist(user);
-        entityManager.persist(report);
-        Page<Report> found = reportRepository.findAllByUser(user, Pageable.unpaged());
-        assertEquals(found.getSize(),1);
+    void findAllByUser() {
+        User user1 = entityManager.persist(User.builder().name("Вениамин").build());
+        entityManager.persist(Report.builder().user(user1).build());
+        Page<Report> found = reportRepository.findAllByUser(user1, Pageable.unpaged());
+        assertEquals(found.getSize(), 1);
 
     }
 }
