@@ -57,7 +57,6 @@ public class UserService {
         return userMapper.mapToResponseDto(user);
     }
 
-
     @Transactional
     public Page<UserRsDto> getAllActiveByRole(Pageable pageable, String userRole) {
         Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(userRole), pageable);
@@ -67,9 +66,11 @@ public class UserService {
                 .collect(Collectors.toList()));
         return users.map(userMapper::mapToResponseDto);
     }
+
     @Transactional
     public Page<UserRsDto> getAllByRole(Pageable pageable, String rolename) {
         Page<User> users = userRepository.findAllByUserRole(UserRole.valueOf(rolename), pageable);
         return users.map(userMapper::mapToResponseDto);
     }
+
 }
