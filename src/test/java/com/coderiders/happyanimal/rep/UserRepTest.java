@@ -25,10 +25,10 @@ public class UserRepTest {
     private UserRepository userRepository;
 
 
-    @Test
-    @Transactional
-    void findById(){
-        entityManager.persist(new User());
-
-    }
+//    @Test
+//    @Transactional
+//    void findById(){
+//        entityManager.persist(new User());
+//
+//    }
 }
